@@ -29,19 +29,19 @@ completion.
 
 Use your favorite plugin manager.
 
-- [NeoBundle][neobundle]
+- [NeoBundle](https://github.com/Shougo/neobundle.vim)
 
     ```vim
     NeoBundle 'wellle/tmux-complete.vim'
     ```
 
-- [Vundle][vundle]
+- [Vundle](https://github.com/gmarik/Vundle.vim)
 
     ```vim
     Bundle 'wellle/tmux-complete.vim'
     ```
 
-- [Pathogen][pathogen]
+- [Pathogen](https://github.com/tpope/vim-pathogen)
 
     ```sh
     git clone git://github.com/wellle/tmux-complete.vim.git ~/.vim/bundle/tmux-complete.vim
