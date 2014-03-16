@@ -23,7 +23,7 @@ function! CompleteScript(findstart, base)
     return []
 endfun
 
-let s:script = g:tmux_complete_location . "/sh/tmuxwords"
+let s:script = g:tmux_complete_location . "/autoload/tmuxwords"
 if !filereadable(s:script)
     echoerr "tmux-complete script not found at" s:script
     finish
