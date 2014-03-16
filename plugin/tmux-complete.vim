@@ -23,5 +23,5 @@ function! CompleteScript(findstart, base)
     return []
 endfun
 
-let s:script = g:tmux_complete_location . "/autoload/tmuxwords"
+let s:script = g:tmux_complete_location . "/sh/tmuxwords.sh"
 set completefunc=CompleteScript
