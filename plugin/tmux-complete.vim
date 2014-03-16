@@ -24,9 +24,4 @@ function! CompleteScript(findstart, base)
 endfun
 
 let s:script = g:tmux_complete_location . "/autoload/tmuxwords"
-if !filereadable(s:script)
-    echoerr "tmux-complete script not found at" s:script
-    finish
-endif
-
 set completefunc=CompleteScript
