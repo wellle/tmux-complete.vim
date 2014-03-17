@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Usage: Get a list of all currently visible words:
-#     sh panewords
+#     sh panewords.sh
 #
 # Get all visible words beginning with `foo`:
-#     sh panewords foo
+#     sh panewords.sh foo
 
 if [[ -z "$TMUX_PANE" ]]; then
     echo "Not running inside tmux!" 1>&2
