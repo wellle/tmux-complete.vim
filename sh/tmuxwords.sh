@@ -16,10 +16,8 @@ allwords() {
     while read active pane; do
         [[ "$active" -eq 0 ]] && tmux capture-pane -J -p -t "$pane"
     done |
-    fmt -1 |
-    sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
-    fmt -1 |
-    sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+    tr -s '[:space:]' '\n' |
+    sed -e 'p;s/[^a-zA-Z0-9_]\+/\n/g'
 }
 
 # take all pane words
