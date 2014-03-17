@@ -16,14 +16,13 @@ allwords() {
     while read active pane; do
         [[ "$active" -eq 0 ]] && tmux capture-pane -J -p -t "$pane"
     done |
-    tr -s '[:space:]' '\n' |
-    sed -e 'p;s/[^a-zA-Z0-9_]\+/\n/g'
+    sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
+    tr -s '[:space:]' '\n'
 }
 
 # take all pane words
 # filter by first argument
 # sort ard remove duplicates
-
-allwords          \
-    | grep "^$1." \
-    | sort -u
+allwords |
+grep "^$1." |
+sort -u
