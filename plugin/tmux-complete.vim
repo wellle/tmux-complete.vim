@@ -1,8 +1,3 @@
-if !exists('g:tmux_complete_location') || g:tmux_complete_location == ''
-    let g:tmux_complete_location =
-        \ "$HOME/.vim/bundle/tmux-complete.vim"
-endif
-
 function! CompleteScript(findstart, base)
     if a:findstart
         " locate the start of the word
@@ -23,5 +18,5 @@ function! CompleteScript(findstart, base)
     return []
 endfun
 
-let s:script = g:tmux_complete_location . "/sh/tmuxwords.sh"
+let s:script = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
 set completefunc=CompleteScript
