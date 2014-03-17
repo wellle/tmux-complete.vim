@@ -46,12 +46,3 @@ Use your favorite plugin manager.
     ```sh
     git clone git://github.com/wellle/tmux-complete.vim.git ~/.vim/bundle/tmux-complete.vim
     ```
-
-## Customization
-
-The plugin assumes that it is located at `~/.vim/bundle/`. If you installed it
-somewhere else, please put this line in your `.vimrc` and adjust the path.
-
-```vim
-let g:tmux_complete_location = "/your/path/tmux-complete.vim"
-```
