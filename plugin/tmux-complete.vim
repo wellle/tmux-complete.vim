@@ -16,7 +16,6 @@ function! CompleteScript(findstart, base)
 
     " find months matching with "a:base"
     let command = 'sh ' . shellescape(expand(s:script)) . ' ' . shellescape(a:base)
-    echom "command" command
     let words = system(command)
     for word in split(words)
         call complete_add(word)
