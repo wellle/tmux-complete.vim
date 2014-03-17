@@ -12,14 +12,14 @@ if [[ -z "$TMUX_PANE" ]]; then
 fi
 
 allwords() {
-    for pane in $(tmux list-panes -F '#P'); do
-        for long in $(tmux capture-pane -J -p -t $pane); do
-            for short in $(echo $long | sed -e 's/[^a-zA-Z0-9_]/ /g'); do
-                echo $short
-            done
-            echo $long
-        done
-    done
+    tmux list-panes -F '#{pane_active} #P' |
+    while read active pane; do
+        [[ "$active" -eq 0 ]] && tmux capture-pane -J -p -t "$pane"
+    done |
+    fmt -1 |
+    sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
+    fmt -1 |
+    sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
 # take all pane words
