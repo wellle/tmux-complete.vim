@@ -33,18 +33,21 @@ panes_all_sessions() {
     done
 }
 
-# take all lines
-# append copy with replaced non word characters
-# split on spaces
-# filter by first argument
-# sort ard remove duplicates
 (
+# panes from active window except active pane
 panes_current_window
+# panes from active session except active window
 panes_current_session
+# panes from all sessions except active session
 panes_all_sessions
 ) |
+# capture lines of those panes
 xargs -n1 tmux capture-pane -J -p -t |
+# append copy with replaced non-word characters
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
-tr -s '[:space:]' '\n'|
+# split on spaces
+tr -s '[:space:]' '\n' |
+# remove words not beginning with first argument
 grep "^$1." |
+# sort and remove duplicates
 sort -u
