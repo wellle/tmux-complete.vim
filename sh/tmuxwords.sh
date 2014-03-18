@@ -18,12 +18,22 @@ panes_current_window() {
     done
 }
 
+panes_current_session() {
+    tmux list-panes -s -F '#{window_active} #I.#P' |
+    while read active pane; do
+        [[ "$active" -eq 0 ]] && echo "$pane"
+    done
+}
+
 # take all lines
 # append copy with replaced non word characters
 # split on spaces
 # filter by first argument
 # sort ard remove duplicates
-panes_current_window |
+(
+panes_current_window
+panes_current_session
+) |
 xargs -n1 tmux capture-pane -J -p -t |
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 tr -s '[:space:]' '\n'|
