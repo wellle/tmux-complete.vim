@@ -11,10 +11,10 @@ if [[ -z "$TMUX_PANE" ]]; then
     exit 1
 fi
 
-allwords() {
+panes_current_window() {
     tmux list-panes -F '#{pane_active} #P' |
     while read active pane; do
-        [[ "$active" -eq 0 ]] && tmux capture-pane -J -p -t "$pane"
+        [[ "$active" -eq 0 ]] && echo "$pane"
     done
 }
 
@@ -23,7 +23,8 @@ allwords() {
 # split on spaces
 # filter by first argument
 # sort ard remove duplicates
-allwords |
+panes_current_window |
+xargs -n1 tmux capture-pane -J -p -t |
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 tr -s '[:space:]' '\n'|
 grep "^$1." |
