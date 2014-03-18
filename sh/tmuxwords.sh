@@ -43,11 +43,11 @@ panes_all_sessions
 ) |
 # capture lines of those panes
 xargs -n1 tmux capture-pane -J -p -t |
-# append copy with replaced non-word characters
-sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
+# filter on pattern and append replaced copy
+sed -e "/$1./p;s/[^a-zA-Z0-9_]/ /g" |
 # split on spaces
 tr -s '[:space:]' '\n' |
-# remove words not beginning with first argument
+# filter out words not beginning with pattern
 grep "^$1." |
 # sort and remove duplicates
 sort -u
