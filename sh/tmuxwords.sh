@@ -25,6 +25,14 @@ panes_current_session() {
     done
 }
 
+panes_all_sessions() {
+    current=$(tmux display-message -p '#S')
+    tmux list-panes -a -F '#S #I.#P' |
+    while read session pane; do
+        [[ $current != $session ]] && echo "$session:$pane"
+    done
+}
+
 # take all lines
 # append copy with replaced non word characters
 # split on spaces
@@ -33,6 +41,7 @@ panes_current_session() {
 (
 panes_current_window
 panes_current_session
+panes_all_sessions
 ) |
 xargs -n1 tmux capture-pane -J -p -t |
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
