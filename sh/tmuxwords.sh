@@ -19,11 +19,11 @@ grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 cut -d' ' -f2 |
 # capture panes
 xargs -n1 tmux capture-pane -J -p -t |
-# filter on pattern and append replaced copy
-sed -e "/$1./p;s/[^a-zA-Z0-9_]/ /g" |
+# copy lines and split words
+sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 # split on spaces
 tr -s '[:space:]' '\n' |
 # filter out words not beginning with pattern
-grep "^$1." |
+grep "$1" |
 # sort and remove duplicates
 sort -u
