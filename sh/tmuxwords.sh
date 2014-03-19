@@ -12,13 +12,13 @@ if [[ -z "$TMUX_PANE" ]]; then
 fi
 
 # list all panes
-tmux list-panes -a -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+tmux list-panes $2 -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
 # filter out current pane (use -F to match $ in session id)
 grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 # take the pane id
 cut -d' ' -f2 |
 # capture panes
-xargs -n1 tmux capture-pane -J -p -t |
+xargs -n1 tmux capture-pane $3 -p -t |
 # copy lines and split words
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 # split on spaces
