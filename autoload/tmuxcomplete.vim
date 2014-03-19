@@ -1,3 +1,8 @@
+function! tmuxcomplete#words(scrollback)
+    let capture_args = '-J -S -' . a:scrollback
+    return tmuxcomplete#completions('', capture_args)
+endfunction
+
 function! tmuxcomplete#completions(base, capture_args)
     let script       = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
