@@ -3,7 +3,7 @@ function! CompleteScript(findstart, base)
         " locate the start of the word
         let line = getline('.')
         let start = col('.') - 1
-        while start > 0 && line[start - 1] =~ '\a'
+        while start > 0 && line[start - 1] =~ get(g:, 'tmux_complete_match', '\a')
             let start -= 1
         endwhile
         return start
