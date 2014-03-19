@@ -11,6 +11,8 @@ function! CompleteScript(findstart, base)
 
     " find months matching with "a:base"
     let command = 'sh ' . shellescape(expand(s:script)) . ' ' . shellescape('^' . escape(a:base, '*^$][.\') . '.')
+    let command .= ' ' . shellescape(get(g:, 'tmux_complete_list_args', '-a'))
+    let command .= ' ' . shellescape(get(g:, 'tmux_complete_capture_args', '-J'))
     let words = system(command)
     for word in split(words)
         call complete_add(word)
