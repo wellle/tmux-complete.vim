@@ -14,7 +14,7 @@ fi
 # list all panes
 tmux list-panes -a -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
 # filter out current pane (use -F to match $ in session id)
-grep -v -F "$(tmux display-message -p '11-#{session_id}')" |
+grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 # take the pane id
 cut -d' ' -f2 |
 # capture panes
