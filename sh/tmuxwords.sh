@@ -11,37 +11,13 @@ if [[ -z "$TMUX_PANE" ]]; then
     exit 1
 fi
 
-panes_current_window() {
-    tmux list-panes -F '#{pane_active} #P' |
-    while read active pane; do
-        [[ "$active" -eq 0 ]] && echo "$pane"
-    done
-}
-
-panes_current_session() {
-    tmux list-panes -s -F '#{window_active} #I.#P' |
-    while read active pane; do
-        [[ "$active" -eq 0 ]] && echo "$pane"
-    done
-}
-
-panes_all_sessions() {
-    current=$(tmux display-message -p '#S')
-    tmux list-panes -a -F '#S #I.#P' |
-    while read session pane; do
-        [[ $current != $session ]] && echo "$session:$pane"
-    done
-}
-
-(
-# panes from active window except active pane
-panes_current_window
-# panes from active session except active window
-panes_current_session
-# panes from all sessions except active session
-panes_all_sessions
-) |
-# capture lines of those panes
+# list all panes
+tmux list-panes -a -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+# filter out current pane (use -F to match $ in session id)
+grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
+# take the pane id
+cut -d' ' -f2 |
+# capture panes
 xargs -n1 tmux capture-pane -J -p -t |
 # filter on pattern and append replaced copy
 sed -e "/$1./p;s/[^a-zA-Z0-9_]/ /g" |
