@@ -1,3 +1,10 @@
+if exists("g:loaded_tmux_complete") || &cp || v:version < 700
+    finish
+endif
+let g:loaded_tmux_complete = '0.0.1' " version number
+let s:save_cpoptions = &cpoptions
+set cpo&vim
+
 function! CompleteScript(findstart, base)
     if a:findstart
         let match = get(g:, 'tmux_complete_match', '\a')
@@ -30,3 +37,6 @@ endfun
 
 let s:script = shellescape(expand('<sfile>:h:h') . "/sh/tmuxwords.sh")
 set completefunc=CompleteScript
+
+let &cpoptions = s:save_cpoptions
+unlet s:save_cpoptions
