@@ -24,17 +24,38 @@ endfunction
 
 function! tmuxcomplete#complete(findstart, base)
     if a:findstart
-        let match = get(g:, 'tmux_complete_match', '\a')
-        " locate the start of the word
         let line = getline('.')
-        let start = col('.') - 1
-        while start > 0 && line[start - 1] =~ match
-            let start -= 1
-        endwhile
-        return start
+        let max = col('.') - 1
+        if get(g:, 'tmux_complete_mode', 'word') == 'WORD'
+            return tmuxcomplete#findstartWORD(line, max)
+        else
+            return tmuxcomplete#findstartword(line, max)
+        endif
     endif
     " find words matching with "a:base"
     let capture_args = get(g:, 'tmux_complete_capture_args', '-J')
     return tmuxcomplete#completions(a:base, capture_args)
 endfun
 
+function! tmuxcomplete#findstartword(line, max)
+    let start = a:max
+    " walk left upto first non word character
+    while start > 0 && a:line[start - 1] =~ '\a'
+        let start -= 1
+    endwhile
+    return start
+endfunction
+
+function! tmuxcomplete#findstartWORD(line, max)
+    " locate the start of the word
+    let start = a:max
+    " walk left upto first non WORD character
+    while start > 0 && a:line[start - 1] =~ '\S'
+        let start -= 1
+    endwhile
+    " walk right onto first word character
+    while start < a:max && a:line[start] =~ '\H'
+        let start += 1
+    endwhile
+    return start
+endfunction
