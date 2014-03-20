@@ -6,7 +6,7 @@
 # Get all visible words beginning with `foo`:
 #     sh panewords.sh foo
 
-if [[ -z "$TMUX_PANE" ]]; then
+if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
     exit 1
 fi
