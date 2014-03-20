@@ -5,7 +5,7 @@ let g:loaded_tmux_complete = '0.0.1' " version number
 let s:save_cpoptions = &cpoptions
 set cpo&vim
 
-function! CompleteScript(findstart, base)
+function! tmuxcomplete#complete(findstart, base)
     if a:findstart
         let match = get(g:, 'tmux_complete_match', '\a')
         " locate the start of the word
@@ -23,6 +23,10 @@ function! CompleteScript(findstart, base)
         call complete_add(completion)
     endfor
     return []
+endfun
+
+function! CompleteScript(findstart, base)
+    return tmuxcomplete#complete(a:findstart, a:base)
 endfun
 
 set completefunc=CompleteScript
