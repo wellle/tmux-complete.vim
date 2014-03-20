@@ -15,5 +15,9 @@ function! tmuxcomplete#completions(base, capture_args)
     let command .=   ' ' . shellescape(a:capture_args)
 
     let completions = system(command)
-    return split(completions)
+    if v:shell_error == 0
+        return split(completions)
+    else
+        return []
+    endif
 endfunction
