@@ -23,6 +23,8 @@ xargs -n1 tmux capture-pane $3 -p -t |
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 # split on spaces
 tr -s '[:space:]' '\n' |
+# remove surrounding non-word characters
+grep -o "\\w.*\\w" |
 # filter out words not beginning with pattern
 grep "$1" |
 # sort and remove duplicates
