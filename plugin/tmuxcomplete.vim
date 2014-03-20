@@ -19,10 +19,7 @@ function! tmuxcomplete#complete(findstart, base)
 
     " find words matching with "a:base"
     let capture_args = get(g:, 'tmux_complete_capture_args', '-J')
-    for completion in tmuxcomplete#completions(a:base, capture_args)
-        call complete_add(completion)
-    endfor
-    return []
+    return tmuxcomplete#completions(a:base, capture_args)
 endfun
 
 function! CompleteScript(findstart, base)
