@@ -21,3 +21,20 @@ function! tmuxcomplete#completions(base, capture_args)
         return []
     endif
 endfunction
+
+function! tmuxcomplete#complete(findstart, base)
+    if a:findstart
+        let match = get(g:, 'tmux_complete_match', '\a')
+        " locate the start of the word
+        let line = getline('.')
+        let start = col('.') - 1
+        while start > 0 && line[start - 1] =~ match
+            let start -= 1
+        endwhile
+        return start
+    endif
+    " find words matching with "a:base"
+    let capture_args = get(g:, 'tmux_complete_capture_args', '-J')
+    return tmuxcomplete#completions(a:base, capture_args)
+endfun
+
