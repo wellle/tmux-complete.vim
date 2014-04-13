@@ -21,6 +21,8 @@ panes right under your fingertips. Just enter insert mode, start typing any
 word you see and press `<C-X><C-U>` to the trigger user defined insert mode
 completion.
 
+This is automatically integrated with [neocomplete](https://github.com/Shougo/neocomplete.vim).
+
 ![][example]
 
 [example]: https://raw.githubusercontent.com/wellle/images/master/tmux-complete-example.png
@@ -45,4 +47,30 @@ Use your favorite plugin manager.
 
     ```sh
     git clone git://github.com/wellle/tmux-complete.vim.git ~/.vim/bundle/tmux-complete.vim
+    ```
+
+## Settings
+
+Use the `#trigger` option to tune the way you interact with
+tmux-complete by putting one of these lines into your `.vimrc`:
+
+- By default, tmux-complete sets Vim's `completefunc`, that can be invoked with
+  `<C-X><C-U>`.
+
+    ```vim
+    let g:tmuxcomplete#trigger = 'completefunc'
+    ```
+
+- Alternatively, you can use Vim's `omnifunc`, that can be invoked with
+  `<C-X><C-O>`.
+
+    ```vim
+    let g:tmuxcomplete#trigger = 'omnifunc'
+    ```
+
+- If you're using the [neocomplete](https://github.com/Shougo/neocomplete.vim)
+  integration, you probably don't need the additional trigger.
+
+    ```vim
+    let g:tmuxcomplete#trigger = ''
     ```
