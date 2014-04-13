@@ -7,7 +7,7 @@ let s:script = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
 
 function! tmuxcomplete#completions(base, capture_args)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
-    let list_args    = get(g:, 'tmux_complete_list_args', '-a')
+    let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
 
     let command  = 'sh ' . shellescape(s:script)
     let command .=   ' ' . shellescape(base_pattern)
@@ -26,14 +26,14 @@ function! tmuxcomplete#complete(findstart, base)
     if a:findstart
         let line = getline('.')
         let max = col('.') - 1
-        if get(g:, 'tmux_complete_mode', 'word') == 'WORD'
+        if get(g:, 'tmuxcomplete#mode', 'word') == 'WORD'
             return tmuxcomplete#findstartWORD(line, max)
         else
             return tmuxcomplete#findstartword(line, max)
         endif
     endif
     " find words matching with "a:base"
-    let capture_args = get(g:, 'tmux_complete_capture_args', '-J')
+    let capture_args = get(g:, 'tmuxcomplete#capture_args', '-J')
     return tmuxcomplete#completions(a:base, capture_args)
 endfun
 
