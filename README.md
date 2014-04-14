@@ -23,6 +23,12 @@ completion.
 
 This is automatically integrated with [neocomplete](https://github.com/Shougo/neocomplete.vim).
 
+If you have [unite.vim](https://github.com/Shougo/unite.vim) installed,
+you can use tmuxcomplete as a unite *source*:
+
+    :Unite tmuxcomplete
+
+
 ![][example]
 
 [example]: https://raw.githubusercontent.com/wellle/images/master/tmux-complete-example.png
