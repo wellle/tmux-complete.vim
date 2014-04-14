@@ -17,12 +17,12 @@ let s:s = {
       \ 'source__maxstrings' : 0,
       \ }
 
-" function! s:s.hooks.on_init(args, context) 
+" function! s:s.hooks.on_init(args, context)
 "   call unite#print_source_message('tmux content', s:s.name)
 " endfunction
 
 " provides the results for unite to search/filter/sort.
-function! s:s.gather_candidates(args, context) 
+function! s:s.gather_candidates(args, context)
   return map(tmuxcomplete#words(s:s.source__maxstrings), "{
         \ 'word' : v:val,
         \ 'is_multiline' : 0,
