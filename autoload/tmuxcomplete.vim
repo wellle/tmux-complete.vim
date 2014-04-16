@@ -1,5 +1,6 @@
 function! tmuxcomplete#words(scrollback)
-    let capture_args = '-J -S -' . a:scrollback
+    let capture_args = get(g:, 'tmuxcomplete#capture_args', '-J')
+    let capture_args .= ' -S -' . a:scrollback
     return tmuxcomplete#completions('', capture_args)
 endfunction
 
