@@ -17,8 +17,8 @@ tmux list-panes $2 -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' 
 grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 # take the pane id
 cut -d' ' -f2 |
-# capture panes
-xargs -n1 tmux capture-pane $3 -p -t |
+# capture panes: tmux 1.6+: capture to paste-buffer, echo it, then delete it.
+xargs -n1 -I{} sh -c 'tmux capture-pane $3 -t {} && tmux show-buffer && tmux delete-buffer' |
 # copy lines and split words
 sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
 # split on spaces

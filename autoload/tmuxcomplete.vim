@@ -1,5 +1,9 @@
+call system('tmux list-panes -J &> /dev/null')
+let s:tmux_has_J_option = (v:shell_error == 0)
+
 function! tmuxcomplete#words(scrollback)
-    let capture_args = get(g:, 'tmuxcomplete#capture_args', '-J')
+    let capture_args = get(g:, 'tmuxcomplete#capture_args',
+          \ (s:tmux_has_J_option ? '-J' : ''))
     let capture_args .= ' -S -' . a:scrollback
     return tmuxcomplete#completions('', capture_args)
 endfunction
@@ -34,7 +38,8 @@ function! tmuxcomplete#complete(findstart, base)
         endif
     endif
     " find words matching with "a:base"
-    let capture_args = get(g:, 'tmuxcomplete#capture_args', '-J')
+    let capture_args = get(g:, 'tmuxcomplete#capture_args',
+          \ (s:tmux_has_J_option ? '-J' : ''))
     return tmuxcomplete#completions(a:base, capture_args)
 endfun
 
