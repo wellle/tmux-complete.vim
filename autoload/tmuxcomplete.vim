@@ -1,10 +1,13 @@
-call system('tmux list-panes -J &> /dev/null')
-let s:tmux_has_J_option = (v:shell_error == 0)
+function! tmuxcomplete#init()
+    let s:capture_args = get(g:, 'tmuxcomplete#capture_args', '?')
+    if s:capture_args == '?'
+        call system('tmux capture-pane -J &> /dev/null') " check for -J flag
+        let s:capture_args = v:shell_error == 0 ? '-J' : ''
+    endif
+endfunction
 
 function! tmuxcomplete#words(scrollback)
-    let capture_args = get(g:, 'tmuxcomplete#capture_args',
-          \ (s:tmux_has_J_option ? '-J' : ''))
-    let capture_args .= ' -S -' . a:scrollback
+    let capture_args = s:capture_args . ' -S -' . a:scrollback
     return tmuxcomplete#completions('', capture_args)
 endfunction
 
@@ -38,9 +41,7 @@ function! tmuxcomplete#complete(findstart, base)
         endif
     endif
     " find words matching with "a:base"
-    let capture_args = get(g:, 'tmuxcomplete#capture_args',
-          \ (s:tmux_has_J_option ? '-J' : ''))
-    return tmuxcomplete#completions(a:base, capture_args)
+    return tmuxcomplete#completions(a:base, s:capture_args)
 endfun
 
 function! tmuxcomplete#findstartword(line, max)
@@ -65,3 +66,5 @@ function! tmuxcomplete#findstartWORD(line, max)
     endwhile
     return start
 endfunction
+
+call tmuxcomplete#init()
