@@ -12,7 +12,7 @@ if [ -z "$TMUX_PANE" ]; then
 fi
 
 capturepane() {
-    if tmux capture-pane -p &> /dev/null; then
+    if [ tmux capture-pane -p &> /dev/null ]; then
         # tmux capture-pane understands -p -> use it
         xargs -n1 tmux capture-pane $1 -p -t
     else
