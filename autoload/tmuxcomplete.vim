@@ -6,27 +6,30 @@ function! tmuxcomplete#init()
     endif
 endfunction
 
-function! tmuxcomplete#words(scrollback)
+function! tmuxcomplete#words(scrollback, lines)
     let capture_args = s:capture_args . ' -S -' . a:scrollback
-    return tmuxcomplete#completions('', capture_args)
+    return tmuxcomplete#completions('', capture_args, a:lines)
 endfunction
 
 let s:script = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
 
-function! tmuxcomplete#completions(base, capture_args)
+function! tmuxcomplete#completions(base, capture_args, lines)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
 
-    let command  = 'sh ' . shellescape(s:script)
+    let command  = 'sh ' . shellescape(s:script) . (a:lines ? ' -l' : '')
     let command .=   ' ' . shellescape(base_pattern)
     let command .=   ' ' . shellescape(list_args)
     let command .=   ' ' . shellescape(a:capture_args)
+    echom command
 
     let completions = system(command)
-    if v:shell_error == 0
-        return split(completions)
-    else
+    if v:shell_error != 0
         return []
+    elseif a:lines
+        return split(completions, '\n')
+    else
+        return split(completions)
     endif
 endfunction
 
