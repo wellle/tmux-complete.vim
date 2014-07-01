@@ -11,7 +11,7 @@ function! tmuxcomplete#words(scrollback, lines)
     return tmuxcomplete#completions('', capture_args, a:lines)
 endfunction
 
-let s:script = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
+let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
 function! tmuxcomplete#completions(base, capture_args, lines)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'

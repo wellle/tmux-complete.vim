@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # Usage: Get a list of all currently visible words:
-#     sh tmuxwords.sh '' -a
+#     sh tmuxcomplete '' -a
 #
 # Get all visible words beginning with `foo`:
-#     sh tmuxwords.sh ^foo -a
+#     sh tmuxcomplete ^foo -a
 #
 # Get all visible lines beginning with `foo`:
-#     sh tmuxwords.sh -l ^foo -a ''
+#     sh tmuxcomplete -l ^foo -a ''
 
 if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
