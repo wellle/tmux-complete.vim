@@ -26,11 +26,9 @@ function! tmuxcomplete#completions(base, capture_args, lines)
     let completions = system(command)
     if v:shell_error != 0
         return []
-    elseif a:lines
-        return split(completions, '\n')
-    else
-        return split(completions)
     endif
+
+    return split(completions, '\n')
 endfunction
 
 function! tmuxcomplete#complete(findstart, base)
