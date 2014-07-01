@@ -1,20 +1,20 @@
 #!/bin/sh
 
 # Usage: Get a list of all currently visible words:
-#     sh tmuxcomplete '' -a
+#     sh tmuxcomplete words '' -a
 #
 # Get all visible words beginning with `foo`:
-#     sh tmuxcomplete ^foo -a
+#     sh tmuxcomplete words ^foo -a
 #
 # Get all visible lines beginning with `foo`:
-#     sh tmuxcomplete -l ^foo -a ''
+#     sh tmuxcomplete lines ^foo -a ''
 
 if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
     exit 1
 fi
 
-[ "$1" = "-l" ] && PAT="$2" LIST="$3" CAPT="$4" || PAT="$1" LIST="$2" CAPT="$3"
+MODE="$1" PATTERN="$2" LISTARGS="$3" CAPTUREARGS="$4"
 
 capturepane() {
     if [ tmux capture-pane -p &> /dev/null ]; then
@@ -42,16 +42,16 @@ splitlines() {
 }
 
 # list all panes
-tmux list-panes $LIST -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
 # filter out current pane (use -F to match $ in session id)
 grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 # take the pane id
 cut -d' ' -f2 |
 # capture panes
-capturepane "$CAPT" |
-# split words unless -l is specified
-( [ "$1" = "-l" ] && splitlines || splitwords ) |
+capturepane "$CAPTUREARGS" |
+# split words or lines depending on mode
+( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
 # filter out words not beginning with pattern
-grep "$PAT" |
+grep "$PATTERN" |
 # sort and remove duplicates
 sort -u

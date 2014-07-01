@@ -6,18 +6,19 @@ function! tmuxcomplete#init()
     endif
 endfunction
 
-function! tmuxcomplete#words(scrollback, lines)
+function! tmuxcomplete#words(scrollback, mode)
     let capture_args = s:capture_args . ' -S -' . a:scrollback
-    return tmuxcomplete#completions('', capture_args, a:lines)
+    return tmuxcomplete#completions('', capture_args, a:mode)
 endfunction
 
 let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
-function! tmuxcomplete#completions(base, capture_args, lines)
+function! tmuxcomplete#completions(base, capture_args, mode)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
 
-    let command  = 'sh ' . shellescape(s:script) . (a:lines ? ' -l' : '')
+    let command  = 'sh ' . shellescape(s:script)
+    let command .=   ' ' . shellescape(a:mode)
     let command .=   ' ' . shellescape(base_pattern)
     let command .=   ' ' . shellescape(list_args)
     let command .=   ' ' . shellescape(a:capture_args)
@@ -42,7 +43,7 @@ function! tmuxcomplete#complete(findstart, base)
         endif
     endif
     " find words matching with "a:base"
-    return tmuxcomplete#completions(a:base, s:capture_args, 0)
+    return tmuxcomplete#completions(a:base, s:capture_args, 'words')
 endfun
 
 function! tmuxcomplete#findstartword(line, max)
