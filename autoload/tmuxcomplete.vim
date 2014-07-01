@@ -44,7 +44,7 @@ function! tmuxcomplete#complete(findstart, base)
         endif
     endif
     " find words matching with "a:base"
-    return tmuxcomplete#completions(a:base, s:capture_args)
+    return tmuxcomplete#completions(a:base, s:capture_args, 0)
 endfun
 
 function! tmuxcomplete#findstartword(line, max)
