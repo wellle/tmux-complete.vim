@@ -6,7 +6,7 @@ function! tmuxcomplete#init()
     endif
 endfunction
 
-function! tmuxcomplete#words(scrollback, mode)
+function! tmuxcomplete#list(mode, scrollback)
     let capture_args = s:capture_args . ' -S -' . a:scrollback
     return tmuxcomplete#completions('', capture_args, a:mode)
 endfunction

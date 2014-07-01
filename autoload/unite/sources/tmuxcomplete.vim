@@ -23,7 +23,7 @@ let s:words = {
 
 " provides the results for unite to search/filter/sort.
 function! s:words.gather_candidates(args, context)
-  return map(tmuxcomplete#words(0, 'words'), "{
+  return map(tmuxcomplete#list('words', 0), "{
         \ 'word' : v:val,
         \ 'is_multiline' : 0,
         \ 'action__text' : v:val,
@@ -36,7 +36,7 @@ let s:lines.name = 'tmuxcomplete/lines'
 let s:lines.description = 'lines in the current tmux session'
 
 function! s:lines.gather_candidates(args, context)
-  return map(tmuxcomplete#words(0, 'lines'), "{
+  return map(tmuxcomplete#list('lines', 0), "{
         \ 'word' : v:val,
         \ 'is_multiline' : 0,
         \ 'action__text' : v:val,
