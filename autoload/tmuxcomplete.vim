@@ -6,28 +6,30 @@ function! tmuxcomplete#init()
     endif
 endfunction
 
-function! tmuxcomplete#words(scrollback)
+function! tmuxcomplete#list(mode, scrollback)
     let capture_args = s:capture_args . ' -S -' . a:scrollback
-    return tmuxcomplete#completions('', capture_args)
+    return tmuxcomplete#completions('', capture_args, a:mode)
 endfunction
 
-let s:script = expand('<sfile>:h:h') . "/sh/tmuxwords.sh"
+let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
-function! tmuxcomplete#completions(base, capture_args)
+function! tmuxcomplete#completions(base, capture_args, mode)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
 
     let command  = 'sh ' . shellescape(s:script)
+    let command .=   ' ' . shellescape(a:mode)
     let command .=   ' ' . shellescape(base_pattern)
     let command .=   ' ' . shellescape(list_args)
     let command .=   ' ' . shellescape(a:capture_args)
+    echom command
 
     let completions = system(command)
-    if v:shell_error == 0
-        return split(completions)
-    else
+    if v:shell_error != 0
         return []
     endif
+
+    return split(completions, '\n')
 endfunction
 
 function! tmuxcomplete#complete(findstart, base)
@@ -41,7 +43,7 @@ function! tmuxcomplete#complete(findstart, base)
         endif
     endif
     " find words matching with "a:base"
-    return tmuxcomplete#completions(a:base, s:capture_args)
+    return tmuxcomplete#completions(a:base, s:capture_args, 'words')
 endfun
 
 function! tmuxcomplete#findstartword(line, max)

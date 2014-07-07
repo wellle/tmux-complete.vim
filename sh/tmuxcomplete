@@ -1,15 +1,20 @@
 #!/bin/sh
 
 # Usage: Get a list of all currently visible words:
-#     sh tmuxwords.sh '' -a
+#     sh tmuxcomplete words '' -a
 #
 # Get all visible words beginning with `foo`:
-#     sh tmuxwords.sh ^foo -a
+#     sh tmuxcomplete words ^foo -a
+#
+# Get all visible lines beginning with `foo`:
+#     sh tmuxcomplete lines ^foo -a ''
 
 if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
     exit 1
 fi
+
+MODE="$1" PATTERN="$2" LISTARGS="$3" CAPTUREARGS="$4"
 
 capturepane() {
     if [ tmux capture-pane -p &> /dev/null ]; then
@@ -22,21 +27,31 @@ capturepane() {
     fi
 }
 
+splitwords() {
+    # copy lines and split words
+    sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
+    # split on spaces
+    tr -s '[:space:]' '\n' |
+    # remove surrounding non-word characters
+    grep -o "\\w.*\\w"
+}
+
+splitlines() {
+    # remove surrounding whitespace
+    grep -o "\\S.*\\S"
+}
+
 # list all panes
-tmux list-panes $2 -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
 # filter out current pane (use -F to match $ in session id)
 grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
 # take the pane id
 cut -d' ' -f2 |
 # capture panes
-capturepane "$3" |
-# copy lines and split words
-sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
-# split on spaces
-tr -s '[:space:]' '\n' |
-# remove surrounding non-word characters
-grep -o "\\w.*\\w" |
+capturepane "$CAPTUREARGS" |
+# split words or lines depending on mode
+( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
 # filter out words not beginning with pattern
-grep "$1" |
+grep "$PATTERN" |
 # sort and remove duplicates
 sort -u
