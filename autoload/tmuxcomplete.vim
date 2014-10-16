@@ -22,7 +22,6 @@ function! tmuxcomplete#completions(base, capture_args, mode)
     let command .=   ' ' . shellescape(base_pattern)
     let command .=   ' ' . shellescape(list_args)
     let command .=   ' ' . shellescape(a:capture_args)
-    echom command
 
     let completions = system(command)
     if v:shell_error != 0
