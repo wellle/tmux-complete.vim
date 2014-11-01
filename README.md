@@ -74,7 +74,9 @@ tmux-complete by putting one of these lines into your `.vimrc`:
     ```
 
 - Alternatively, you can use Vim's `omnifunc`, that can be invoked with
-    `<C-X><C-O>`.
+    `<C-X><C-O>`. This setting also integrates with
+    [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) so you can see
+    Tmux completions when hitting `<C-Space>`.
 
     ```vim
     let g:tmuxcomplete#trigger = 'omnifunc'
