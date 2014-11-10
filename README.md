@@ -36,7 +36,8 @@ Tmux complete is automatically integrated with the following plugins:
     as a unite source:
 
     ```vim
-    Unite tmuxcomplete
+    Unite tmuxcomplete       " opens a menu containing words from adjacent tmux windows
+    Unite tmuxcomplete/lines " opens a menu containing words from adjacent tmux windows and lines where they were found
     ```
 
 ## Installation
