@@ -74,6 +74,12 @@ function! tmuxcomplete#grepargs(base)
     if !&ignorecase
         return ''
     endif
+    if !&smartcase
+        return '-i'
+    endif
+    if a:base =~# '[A-Z]'
+        return ''
+    endif
     return '-i'
 endfunction
 
