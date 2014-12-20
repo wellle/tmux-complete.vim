@@ -6,15 +6,18 @@
 # Get all visible words beginning with `foo`:
 #     sh tmuxcomplete words ^foo -a
 #
+# Get all visible words beginning with `foo`, ignoring case:
+#     sh tmuxcomplete words ^foo -a -i
+#
 # Get all visible lines beginning with `foo`:
-#     sh tmuxcomplete lines ^foo -a ''
+#     sh tmuxcomplete lines ^foo -a
 
 if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
     exit 1
 fi
 
-MODE="$1" PATTERN="$2" LISTARGS="$3" CAPTUREARGS="$4"
+MODE="$1" PATTERN="$2" LISTARGS="$3" CAPTUREARGS="$4" GREPARGS="$5"
 
 capturepane() {
     if tmux capture-pane -p >/dev/null 2>&1; then
@@ -51,7 +54,7 @@ cut -d' ' -f2 |
 capturepane "$CAPTUREARGS" |
 # split words or lines depending on mode
 ( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
-# filter out words not beginning with pattern
-grep "$PATTERN" |
+# filter out words not matching pattern
+grep "$PATTERN" $GREPARGS |
 # sort and remove duplicates
 sort -u
