@@ -16,12 +16,14 @@ let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 function! tmuxcomplete#completions(base, capture_args, mode)
     let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
+    let grep_args    = tmuxcomplete#grepargs(a:base)
 
     let command  = 'sh ' . shellescape(s:script)
     let command .=   ' ' . shellescape(a:mode)
     let command .=   ' ' . shellescape(base_pattern)
     let command .=   ' ' . shellescape(list_args)
     let command .=   ' ' . shellescape(a:capture_args)
+    let command .=   ' ' . shellescape(grep_args)
 
     let completions = system(command)
     if v:shell_error != 0
@@ -66,6 +68,19 @@ function! tmuxcomplete#findstartWORD(line, max)
         let start += 1
     endwhile
     return start
+endfunction
+
+function! tmuxcomplete#grepargs(base)
+    if !&ignorecase
+        return ''
+    endif
+    if !&smartcase
+        return '-i'
+    endif
+    if a:base =~# '[A-Z]'
+        return ''
+    endif
+    return '-i'
 endfunction
 
 call tmuxcomplete#init()
