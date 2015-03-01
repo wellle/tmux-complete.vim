@@ -4,13 +4,13 @@
 #     sh tmuxcomplete words '' -a
 #
 # Get all visible words beginning with `foo`:
-#     sh tmuxcomplete words ^foo -a
+#     sh tmuxcomplete words '^foo' -a
 #
 # Get all visible words beginning with `foo`, ignoring case:
-#     sh tmuxcomplete words ^foo -a '' -i
+#     sh tmuxcomplete words '^foo' -a '' -i
 #
 # Get all visible lines beginning with `foo`:
-#     sh tmuxcomplete lines ^foo -a
+#     sh tmuxcomplete lines '^foo' -a
 
 if [ -z "$TMUX_PANE" ]; then
     echo "Not running inside tmux!" 1>&2
