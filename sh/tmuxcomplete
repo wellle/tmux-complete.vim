@@ -45,16 +45,22 @@ splitlines() {
 }
 
 # list all panes
-tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
-# filter out current pane (use -F to match $ in session id)
-grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
-# take the pane id
-cut -d' ' -f2 |
-# capture panes
-capturepane "$CAPTUREARGS" |
-# split words or lines depending on mode
-( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
-# filter out words not matching pattern
-grep "$PATTERN" $GREPARGS |
-# sort and remove duplicates
-sort -u
+_tmux_panes="$(tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+    # filter out current pane (use -F to match $ in session id)
+    grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
+    # take the pane id
+    cut -d' ' -f2)"
+
+if [ "$_tmux_panes" ]; then
+    echo $_tmux_panes |
+    # capture panes
+    capturepane "$CAPTUREARGS" |
+    # split words or lines depending on mode
+    ( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
+    # filter out words not matching pattern
+    grep "$PATTERN" $GREPARGS |
+    # sort and remove duplicates
+    sort -u
+fi
+
+unset _tmux_panes
