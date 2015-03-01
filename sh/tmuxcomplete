@@ -58,7 +58,7 @@ if [ "$_tmux_panes" ]; then
     # split words or lines depending on mode
     ( [ "$MODE" = "lines" ] && splitlines || splitwords ) |
     # filter out words not matching pattern
-    grep "$PATTERN" $GREPARGS |
+    grep -e "$PATTERN" $GREPARGS |
     # sort and remove duplicates
     sort -u
 fi
