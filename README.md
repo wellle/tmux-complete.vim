@@ -89,3 +89,6 @@ tmux-complete by putting one of these lines into your `.vimrc`:
     ```vim
     let g:tmuxcomplete#trigger = ''
     ```
+
+The trigger function itself is named `tmuxcomplete#complete` (in case you want
+to call it manually).
