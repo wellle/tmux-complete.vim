@@ -24,6 +24,7 @@ function! tmuxcomplete#completions(base, capture_args, splitmode)
     let command .= ' -l ' . shellescape(list_args)
     let command .= ' -c ' . shellescape(a:capture_args)
     let command .= ' -g ' . shellescape(grep_args)
+    let command .= ' -e'
 
     let completions = system(command)
     if v:shell_error != 0
