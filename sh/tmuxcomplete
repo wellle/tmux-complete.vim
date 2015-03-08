@@ -51,7 +51,19 @@ do case $name in
 esac
 done
 
-capturepane() {
+listpanes() {
+    tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}'
+}
+
+excludecurrent() {
+    ( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat )
+}
+
+paneids() {
+    cut -d' ' -f2
+}
+
+capturepanes() {
     panes=$(cat)
     if [ -z "$panes" ]; then
         echo 'no panes' 1>&2
@@ -65,6 +77,19 @@ capturepane() {
     fi
 }
 
+split() {
+    if [ "$SPLITMODE" = "lines" ]; then
+        splitlines
+    else
+        splitwords
+    fi
+}
+
+splitlines() {
+    # remove surrounding whitespace
+    grep -o "\\S.*\\S"
+}
+
 splitwords() {
     # copy lines and split words
     sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
@@ -74,21 +99,16 @@ splitwords() {
     grep -o "\\w.*\\w"
 }
 
-splitlines() {
-    # remove surrounding whitespace
-    grep -o "\\S.*\\S"
-}
-
 # list all panes
-tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+listpanes |
 # filter out current pane (use -F to match $ in session id)
-( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat ) |
+excludecurrent |
 # take the pane id
-cut -d' ' -f2 |
+paneids |
 # capture panes
-capturepane "$CAPTUREARGS" |
+capturepanes "$CAPTUREARGS" |
 # split words or lines depending on splitmode
-( [ "$SPLITMODE" = "lines" ] && splitlines || splitwords ) |
+split |
 # filter out words not matching pattern
 grep -e "$PATTERN" $GREPARGS |
 # sort and remove duplicates
