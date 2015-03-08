@@ -52,13 +52,16 @@ esac
 done
 
 capturepane() {
-    if tmux capture-pane -p >/dev/null 2>&1; then
+    panes=$(cat)
+    if [ -z "$panes" ]; then
+        echo 'no panes' 1>&2
+    elif tmux capture-pane -p >/dev/null 2>&1; then
         # tmux capture-pane understands -p -> use it
-        xargs -n1 tmux capture-pane $1 -p -t
+        echo "$panes" | xargs -n1 tmux capture-pane $1 -p -t
     else
         # tmux capture-pane doesn't understand -p (like version 1.6)
         # -> capture to paste-buffer, echo it, then delete it
-        xargs -n1 -I{} sh -c "tmux capture-pane $1 -t {} && tmux show-buffer && tmux delete-buffer"
+        echo "$panes" | xargs -n1 -I{} sh -c "tmux capture-pane $1 -t {} && tmux show-buffer && tmux delete-buffer"
     fi
 }
 
@@ -77,22 +80,16 @@ splitlines() {
 }
 
 # list all panes
-_tmux_panes="$(tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
-    # filter out current pane (use -F to match $ in session id)
-    ( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat ) |
-    # take the pane id
-    cut -d' ' -f2)"
-
-if [ "$_tmux_panes" ]; then
-    echo $_tmux_panes |
-    # capture panes
-    capturepane "$CAPTUREARGS" |
-    # split words or lines depending on splitmode
-    ( [ "$SPLITMODE" = "lines" ] && splitlines || splitwords ) |
-    # filter out words not matching pattern
-    grep -e "$PATTERN" $GREPARGS |
-    # sort and remove duplicates
-    sort -u
-fi
-
-unset _tmux_panes
+tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
+# filter out current pane (use -F to match $ in session id)
+( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat ) |
+# take the pane id
+cut -d' ' -f2 |
+# capture panes
+capturepane "$CAPTUREARGS" |
+# split words or lines depending on splitmode
+( [ "$SPLITMODE" = "lines" ] && splitlines || splitwords ) |
+# filter out words not matching pattern
+grep -e "$PATTERN" $GREPARGS |
+# sort and remove duplicates
+sort -u
