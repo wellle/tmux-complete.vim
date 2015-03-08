@@ -56,7 +56,14 @@ listpanes() {
 }
 
 excludecurrent() {
-    ( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat )
+    if [ "$EXCLUDE" = "1" ]; then
+        currentpane=$(tmux display-message -p '11-#{session_id} ')
+        # echo 1>&2 'current' "$currentpane"
+        # use -F to match $ in session id
+        grep -v -F "$currentpane"
+    else
+        cat
+    fi
 }
 
 paneids() {
@@ -66,7 +73,7 @@ paneids() {
 capturepanes() {
     panes=$(cat)
     if [ -z "$panes" ]; then
-        echo 'no panes' 1>&2
+        # echo 'no panes' 1>&2
     elif tmux capture-pane -p >/dev/null 2>&1; then
         # tmux capture-pane understands -p -> use it
         echo "$panes" | xargs -n1 tmux capture-pane $CAPTUREARGS -p -t
@@ -101,7 +108,7 @@ splitwords() {
 
 # list all panes
 listpanes |
-# filter out current pane (use -F to match $ in session id)
+# filter out current pane
 excludecurrent |
 # take the pane id
 paneids |
@@ -109,7 +116,7 @@ paneids |
 capturepanes |
 # split words or lines depending on splitmode
 split |
-# filter out words not matching pattern
+# filter out items not matching pattern
 grep -e "$PATTERN" $GREPARGS |
 # sort and remove duplicates
 sort -u
