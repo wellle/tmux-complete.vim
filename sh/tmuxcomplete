@@ -1,12 +1,15 @@
 #!/bin/sh
 
-# Usage: Get a list of all words visible in current window excluding current pane
+# Usage: Get a list of all words visible in current window
 #     sh tmuxcomplete
 #
-# Words visible in current session, excluding current pane
+# Words visible in current window, excluding current pane
+#     sh tmuxcomplete -e
+#
+# Words visible in current session
 #     sh tmuxcomplete -l '-s'
 #
-# Words visible in all sessions, excluding current pane
+# Words visible in all sessions
 #     sh tmuxcomplete -l '-a'
 #
 # Words containing 'foo'
@@ -29,13 +32,15 @@ if [ -z "$TMUX_PANE" ]; then
     exit 1
 fi
 
+EXCLUDE='0'
 PATTERN=''
 SPLITMODE=words
 LISTARGS=''
 CAPTUREARGS=''
 GREPARGS=''
-while getopts p:s:l:c:g: name
+while getopts ep:s:l:c:g: name
 do case $name in
+    e) EXCLUDE="1";;
     p) PATTERN="$OPTARG";;
     s) SPLITMODE="$OPTARG";;
     l) LISTARGS="$OPTARG";;
@@ -74,7 +79,7 @@ splitlines() {
 # list all panes
 _tmux_panes="$(tmux list-panes $LISTARGS -F '#{pane_active}#{window_active}-#{session_id} #{pane_id}' |
     # filter out current pane (use -F to match $ in session id)
-    grep -v -F "$(tmux display-message -p '11-#{session_id} ')" |
+    ( [ "$EXCLUDE" = "1" ] && grep -v -F "$(tmux display-message -p '11-#{session_id} ')" || cat ) |
     # take the pane id
     cut -d' ' -f2)"
 
