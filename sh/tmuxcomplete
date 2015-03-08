@@ -69,11 +69,11 @@ capturepanes() {
         echo 'no panes' 1>&2
     elif tmux capture-pane -p >/dev/null 2>&1; then
         # tmux capture-pane understands -p -> use it
-        echo "$panes" | xargs -n1 tmux capture-pane $1 -p -t
+        echo "$panes" | xargs -n1 tmux capture-pane $CAPTUREARGS -p -t
     else
         # tmux capture-pane doesn't understand -p (like version 1.6)
         # -> capture to paste-buffer, echo it, then delete it
-        echo "$panes" | xargs -n1 -I{} sh -c "tmux capture-pane $1 -t {} && tmux show-buffer && tmux delete-buffer"
+        echo "$panes" | xargs -n1 -I{} sh -c "tmux capture-pane $CAPTUREARGS -t {} && tmux show-buffer && tmux delete-buffer"
     fi
 }
 
@@ -106,7 +106,7 @@ excludecurrent |
 # take the pane id
 paneids |
 # capture panes
-capturepanes "$CAPTUREARGS" |
+capturepanes |
 # split words or lines depending on splitmode
 split |
 # filter out words not matching pattern
