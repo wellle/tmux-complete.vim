@@ -6,24 +6,25 @@ function! tmuxcomplete#init()
     endif
 endfunction
 
-function! tmuxcomplete#list(mode, scrollback)
+function! tmuxcomplete#list(splitmode, scrollback)
     let capture_args = s:capture_args . ' -S -' . a:scrollback
-    return tmuxcomplete#completions('', capture_args, a:mode)
+    return tmuxcomplete#completions('', capture_args, a:splitmode)
 endfunction
 
 let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
-function! tmuxcomplete#completions(base, capture_args, mode)
-    let base_pattern = '^' . escape(a:base, '*^$][.\') . '.'
-    let list_args    = get(g:, 'tmuxcomplete#list_args', '-a')
-    let grep_args    = tmuxcomplete#grepargs(a:base)
+function! tmuxcomplete#completions(base, capture_args, splitmode)
+    let pattern   = '^' . escape(a:base, '*^$][.\') . '.'
+    let list_args = get(g:, 'tmuxcomplete#list_args', '-a')
+    let grep_args = tmuxcomplete#grepargs(a:base)
 
-    let command  = 'sh ' . shellescape(s:script)
-    let command .=   ' ' . shellescape(a:mode)
-    let command .=   ' ' . shellescape(base_pattern)
-    let command .=   ' ' . shellescape(list_args)
-    let command .=   ' ' . shellescape(a:capture_args)
-    let command .=   ' ' . shellescape(grep_args)
+    let command  =  'sh ' . shellescape(s:script)
+    let command .= ' -p ' . shellescape(pattern)
+    let command .= ' -s ' . shellescape(a:splitmode)
+    let command .= ' -l ' . shellescape(list_args)
+    let command .= ' -c ' . shellescape(a:capture_args)
+    let command .= ' -g ' . shellescape(grep_args)
+    let command .= ' -e'
 
     let completions = system(command)
     if v:shell_error != 0
