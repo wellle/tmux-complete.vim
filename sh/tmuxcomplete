@@ -74,6 +74,7 @@ capturepanes() {
     panes=$(cat)
     if [ -z "$panes" ]; then
         # echo 'no panes' 1>&2
+        return
     elif tmux capture-pane -p >/dev/null 2>&1; then
         # tmux capture-pane understands -p -> use it
         echo "$panes" | xargs -n1 tmux capture-pane $CAPTUREARGS -p -t
