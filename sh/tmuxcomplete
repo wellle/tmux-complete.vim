@@ -27,9 +27,10 @@
 # Words including 2000 lines of history per pane
 #     sh tmuxcomplete -c '-S -2000'
 
-if [ -z "$TMUX_PANE" ]; then
-    echo "Not running inside tmux!" 1>&2
-    exit 1
+if ! tmux info &> /dev/null; then
+    echo "[tmux-complete.vim]"
+    echo "No tmux found!"
+    exit 0
 fi
 
 EXCLUDE='0'
