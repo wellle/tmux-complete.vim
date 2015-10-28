@@ -23,7 +23,14 @@ completion.
 
 ![][example]
 
+It also completes words that are scrolled off, hidden in background tmux
+windows and even different tmux sessions. And it even works from gvim or
+MacVim!
+
+![][gvim]
+
 [example]: https://raw.githubusercontent.com/wellle/images/master/tmux-complete-example.png
+[gvim]: https://raw.githubusercontent.com/wellle/images/master/gvim-complete.png
 
 ## Third party integration
 
