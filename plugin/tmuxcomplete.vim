@@ -1,7 +1,7 @@
 if exists("g:tmuxcomplete#loaded") || &cp || v:version < 700
     finish
 endif
-let g:tmuxcomplete#loaded = '0.0.6' " version number
+let g:tmuxcomplete#loaded = '0.1.1' " version number
 
 function! s:init()
     let trigger = get(g:, 'tmuxcomplete#trigger', 'completefunc')
