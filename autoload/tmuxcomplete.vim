@@ -87,4 +87,9 @@ function! tmuxcomplete#grepargs(base)
     return '-i'
 endfunction
 
+" for integration with completion frameworks
+function! tmuxcomplete#gather_candidates()
+    return tmuxcomplete#complete(0, '')
+endfunction
+
 call tmuxcomplete#init()
