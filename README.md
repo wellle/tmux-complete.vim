@@ -39,6 +39,12 @@ Tmux complete is automatically integrated with the following plugins:
 - [neocomplete](https://github.com/Shougo/neocomplete.vim): You can see tmux
     completions right in your neocomplete pop-up.
 
+- [neocomplcache](https://github.com/Shougo/neocomplcache.vim): You can see tmux
+    completions right in your neocomplcache pop-up.
+
+- [deoplete](https://github.com/Shougo/deoplete.nvim): You can see tmux
+    completions right in your deoplete pop-up.
+
 - [unite](https://github.com/Shougo/unite.vim): You can use tmux complete
     as a unite source:
 
@@ -75,23 +81,25 @@ Use the `#trigger` option to tune the way you interact with
 tmux-complete by putting one of these lines into your `.vimrc`:
 
 - By default, tmux-complete sets Vim's `completefunc`, that can be invoked with
-    `<C-X><C-U>`.
+  `<C-X><C-U>`.
 
     ```vim
     let g:tmuxcomplete#trigger = 'completefunc'
     ```
 
 - Alternatively, you can use Vim's `omnifunc`, that can be invoked with
-    `<C-X><C-O>`. This setting also integrates with
-    [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) so you can see
-    Tmux completions when hitting `<C-Space>`.
+  `<C-X><C-O>`. This setting also integrates with
+  [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) so you can see
+  Tmux completions when hitting `<C-Space>`.
 
     ```vim
     let g:tmuxcomplete#trigger = 'omnifunc'
     ```
 
-- If you're using the [neocomplete](https://github.com/Shougo/neocomplete.vim)
-    integration, you probably don't need the additional trigger.
+- If you're using the [neocomplete](https://github.com/Shougo/neocomplete.vim),
+  [neocomplcache](https://github.com/Shougo/neocomplcache.vim) or
+  [deoplete](https://github.com/Shougo/deoplete.nvim) integration, you probably
+  don't need the additional trigger.
 
     ```vim
     let g:tmuxcomplete#trigger = ''

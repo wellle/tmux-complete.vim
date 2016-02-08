@@ -9,7 +9,7 @@ let s:source = {
             \ }
 
 function! s:source.gather_candidates(context)
-    return tmuxcomplete#complete(0, '')
+    return tmuxcomplete#gather_candidates()
 endfunction
 
 function! neocomplete#sources#tmuxcomplete#define()
