@@ -57,23 +57,34 @@ Tmux complete is automatically integrated with the following plugins:
 
 Use your favorite plugin manager.
 
-- [NeoBundle](https://github.com/Shougo/neobundle.vim)
+- [NeoBundle][neobundle]
 
     ```vim
     NeoBundle 'wellle/tmux-complete.vim'
     ```
 
-- [Vundle](https://github.com/gmarik/Vundle.vim)
+- [Vundle][vundle]
 
     ```vim
     Bundle 'wellle/tmux-complete.vim'
     ```
 
-- [Pathogen](https://github.com/tpope/vim-pathogen)
+- [Vim-plug][vim-plug]
+
+    ```vim
+    Plug 'wellle/tmux-complete.vim'
+    ```
+
+- [Pathogen][pathogen]
 
     ```sh
     git clone git://github.com/wellle/tmux-complete.vim.git ~/.vim/bundle/tmux-complete.vim
     ```
+
+[neobundle]: https://github.com/Shougo/neobundle.vim
+[vundle]: https://github.com/gmarik/vundle
+[vim-plug]: https://github.com/junegunn/vim-plug
+[pathogen]: https://github.com/tpope/vim-pathogen
 
 ## Settings
 
