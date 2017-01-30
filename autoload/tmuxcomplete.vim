@@ -13,7 +13,7 @@ endfunction
 
 let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
-function! tmuxcomplete#completions(base, capture_args, splitmode)
+function! s:build_command(base, capture_args, splitmode)
     let pattern   = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args = get(g:, 'tmuxcomplete#list_args', '-a')
     let grep_args = tmuxcomplete#grepargs(a:base)
@@ -28,6 +28,16 @@ function! tmuxcomplete#completions(base, capture_args, splitmode)
     if $TMUX_PANE !=# ""     " if running inside tmux
         let command .= ' -e' " exclude current pane
     endif
+
+    return command
+endfunction
+
+function! tmuxcomplete#getcommand(base, splitmode)
+    return s:build_command(a:base, s:capture_args, a:splitmode)
+endfunction
+
+function! tmuxcomplete#completions(base, capture_args, splitmode)
+    let command = s:build_command(a:base, a:capture_args, a:splitmode)
 
     let completions = system(command)
     if v:shell_error != 0
