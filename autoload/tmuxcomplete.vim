@@ -18,28 +18,35 @@ function! s:build_command(base, capture_args, splitmode)
     let list_args = get(g:, 'tmuxcomplete#list_args', '-a')
     let grep_args = tmuxcomplete#grepargs(a:base)
 
-    let command  =  'sh ' . shellescape(s:script)
-    let command .= ' -p ' . shellescape(pattern)
-    let command .= ' -s ' . shellescape(a:splitmode)
-    let command .= ' -l ' . shellescape(list_args)
-    let command .= ' -c ' . shellescape(a:capture_args)
-    let command .= ' -g ' . shellescape(grep_args)
+    " TODO: we need to handle shellescape somewhere else now
+    let command = [
+                \ 'sh', s:script,
+                \ '-p', pattern,
+                \ '-s', a:splitmode,
+                \ '-l', list_args,
+                \ '-c', a:capture_args,
+                \ '-g', grep_args,
+                \ ]
 
-    if $TMUX_PANE !=# ""     " if running inside tmux
-        let command .= ' -e' " exclude current pane
+    if $TMUX_PANE !=# ""                 " if running inside tmux
+        let command = add(command, '-e') " exclude current pane
     endif
 
     return command
 endfunction
 
 function! tmuxcomplete#getcommand(base, splitmode)
+    return join(tmuxcomplete#getcommandlist(a:base, a:splitmode))
+endfunction
+
+function! tmuxcomplete#getcommandlist(base, splitmode)
     return s:build_command(a:base, s:capture_args, a:splitmode)
 endfunction
 
 function! tmuxcomplete#completions(base, capture_args, splitmode)
-    let command = s:build_command(a:base, a:capture_args, a:splitmode)
+    let command = join(s:build_command(a:base, a:capture_args, a:splitmode))
 
-    let completions = system(command)
+    let completions = system(command) " TODO: use systemlist()?
     if v:shell_error != 0
         return []
     endif
