@@ -1,9 +1,11 @@
+let s:defaultopts = {
+            \ 'name':      'tmuxcomplete',
+            \ 'whitelist': ['*'],
+            \ 'completor': function('asyncomplete#sources#tmuxcomplete#completor'),
+            \ }
+
 function! asyncomplete#sources#tmuxcomplete#register(opts)
-    let l:opts = extend(extend({}, a:opts), {
-                \ 'name':      'tmuxcomplete',
-                \ 'whitelist': ['*'],
-                \ 'completor': function('asyncomplete#sources#tmuxcomplete#completor'),
-                \ })
+    let l:opts = extend(copy(s:defaultopts), a:opts)
     call asyncomplete#register_source(l:opts)
 endfunction
 
