@@ -23,11 +23,15 @@ let s:defaultopts = {
 " if it's enabled we can't get early incomplete results. if you have
 " 'show_incomplete' disabled, this might get slightly quicker results and
 " potentially better sorted completions.
+"
+" if 'scrollback' is positive we will consider that many lines in each tmux
+" pane's history for completion
 let s:defaultconfig = {
             \ 'splitmode':      'words',
             \ 'filter_prefix':   1,
             \ 'show_incomplete': 1,
-            \ 'sort_candidates': 0
+            \ 'sort_candidates': 0,
+            \ 'scrollback':      0
             \ }
 
 function! asyncomplete#sources#tmuxcomplete#register(opts)
@@ -65,7 +69,7 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
         let l:kw = ''
     endif
 
-    let l:cmd = tmuxcomplete#getcommandlist(l:kw, l:config['splitmode'])
+    let l:cmd = tmuxcomplete#getcommandlist(l:kw, l:config['scrollback'], l:config['splitmode'])
     if !l:config['sort_candidates']
         call add(l:cmd, '-n')
     endif

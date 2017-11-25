@@ -36,11 +36,12 @@ function! s:build_command(base, capture_args, splitmode)
 endfunction
 
 function! tmuxcomplete#getcommand(base, splitmode)
-    return join(tmuxcomplete#getcommandlist(a:base, a:splitmode))
+    return join(tmuxcomplete#getcommandlist(a:base, 0, a:splitmode))
 endfunction
 
-function! tmuxcomplete#getcommandlist(base, splitmode)
-    return s:build_command(a:base, s:capture_args, a:splitmode)
+function! tmuxcomplete#getcommandlist(base, scrollback, splitmode)
+    let capture_args = s:capture_args . ' -S -' . a:scrollback
+    return s:build_command(a:base, capture_args, a:splitmode)
 endfunction
 
 function! tmuxcomplete#completions(base, capture_args, splitmode)
