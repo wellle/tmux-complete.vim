@@ -10,29 +10,33 @@ endfunction
 function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     " taken from asyncomplete-buffer
     let l:kw = matchstr(a:ctx['typed'], '\w\+$')
-    let a:opt['kwlen'] = len(l:kw)
-    if a:opt['kwlen'] < 1
+    let l:kwlen = len(l:kw)
+    if l:kwlen < 1
         return
     endif
 
-    let l:cmd = tmuxcomplete#getcommandlist(l:kw, 'words')
-    let a:opt['buffer'] = ''
+    let l:params = {
+                \ 'name':     a:opt['name'],
+                \ 'ctx':      a:ctx,
+                \ 'startcol': a:ctx['col'] - l:kwlen,
+                \ 'buffer':   ''
+                \ }
 
+    let l:cmd = tmuxcomplete#getcommandlist(l:kw, 'words')
     let l:jobid = async#job#start(l:cmd, {
-                \ 'on_stdout': function('s:handler', [a:opt, a:ctx]),
-                \ 'on_exit':   function('s:handler', [a:opt, a:ctx]),
+                \ 'on_stdout': function('s:handler', [l:params]),
+                \ 'on_exit':   function('s:handler', [l:params]),
                 \ })
 endfunction
 
-function! s:handler(opt, ctx, id, data, event) abort
+function! s:handler(params, id, data, event) abort
     if a:event ==? 'stdout'
-        let a:opt['buffer'] .= join(a:data)
+        let a:params['buffer'] .= join(a:data)
 
     elseif a:event ==? 'exit'
-        let l:startcol = a:ctx['col'] - a:opt['kwlen']
-        let l:words = split(a:opt['buffer'])
-        let l:matches = map(l:words,'{"word":v:val,"icase":1,"menu":"[' . a:opt['name'] . ']"}')
+        let l:words = split(a:params['buffer'])
+        let l:matches = map(l:words, '{"word":v:val,"icase":1,"menu":"[' . a:params['name'] . ']"}')
 
-        call asyncomplete#complete(a:opt['name'], a:ctx, l:startcol, l:matches)
+        call asyncomplete#complete(a:params['name'], a:params['ctx'], a:params['startcol'], l:matches)
     endif
 endfunction
