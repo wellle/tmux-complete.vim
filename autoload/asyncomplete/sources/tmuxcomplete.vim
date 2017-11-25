@@ -16,33 +16,53 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     if l:kwlen < 1
         return
     endif
+    " echom '#completor for ' . l:kw
 
     let l:params = {
                 \ 'name':     a:opt['name'],
                 \ 'ctx':      a:ctx,
                 \ 'startcol': a:ctx['col'] - l:kwlen,
-                \ 'buffer':   ''
+                \ 'kw':       l:kw,
+                \ 'raw':      [],
+                \ 'mapped':   []
                 \ }
 
-    " Add first empty completion as incomplete to allow adding more
+    " Add first empty candidate as incomplete to allow adding more
     " completions later, even if the context changed in between.
-    call asyncomplete#complete(l:params['name'], l:params['ctx'], l:params['startcol'], [''], 1)
+    call s:complete(l:params, [''], 1)
 
     let l:cmd = tmuxcomplete#getcommandlist(l:kw, 'words')
     let l:jobid = async#job#start(l:cmd, {
-                \ 'on_stdout': function('s:handler', [l:params]),
-                \ 'on_exit':   function('s:handler', [l:params]),
+                \ 'on_stdout': function('s:stdout', [l:params]),
+                \ 'on_exit':   function('s:exit',   [l:params]),
                 \ })
 endfunction
 
-function! s:handler(params, id, data, event) abort
-    if a:event ==? 'stdout'
-        let a:params['buffer'] .= join(a:data)
+function! s:stdout(params, id, data, event) abort
+    " echom '#stdout for ' . a:params['kw'] . ' with ' . (len(a:data) < 5 ? string(a:data) : string(a:data[0 : 1]) . ' ..' . len(a:data) . '.. ' . string(a:data[-2 : -1]))
 
-    elseif a:event ==? 'exit'
-        let l:words = split(a:params['buffer'])
-        let l:matches = map(l:words, '{"word":v:val,"icase":1,"menu":"[' . a:params['name'] . ']"}')
+    call extend(a:params['raw'], a:data) " to be mapped differently again on exit
 
-        call asyncomplete#complete(a:params['name'], a:params['ctx'], a:params['startcol'], l:matches)
+    " surround with pipes while incomplete
+    call extend(a:params['mapped'], map(copy(a:data), '{"word":v:val,"menu":"|' . a:params['name'] . '|"}'))
+    call s:complete(a:params, a:params['mapped'], 1)
+endfunction
+
+function! s:exit(params, id, data, event) abort
+    " echom '#exit for ' . a:params['kw'] . ' with ' . a:data
+
+    if a:data != 0 " command failed
+        " echom 'failed with ' . a:data
+        " set candidates as complete to stop completing on context changes
+        call s:complete(a:params, [''], 0)
+        return
     endif
+
+    " surround with brackends when complete
+    let l:mapped = map(a:params['raw'], '{"word":v:val,"menu":"[' . a:params['name'] . ']"}')
+    call s:complete(a:params, l:mapped, 0)
+endfunction
+
+function! s:complete(params, candidates, incomplete)
+    call asyncomplete#complete(a:params['name'], a:params['ctx'], a:params['startcol'], a:candidates, a:incomplete)
 endfunction
