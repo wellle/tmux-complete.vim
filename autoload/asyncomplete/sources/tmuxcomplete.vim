@@ -22,6 +22,10 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
                 \ 'buffer':   ''
                 \ }
 
+    " Add first empty completion as incomplete to allow adding more
+    " completions later, even if the context changed in between.
+    call asyncomplete#complete(l:params['name'], l:params['ctx'], l:params['startcol'], [''], 1)
+
     let l:cmd = tmuxcomplete#getcommandlist(l:kw, 'words')
     let l:jobid = async#job#start(l:cmd, {
                 \ 'on_stdout': function('s:handler', [l:params]),
