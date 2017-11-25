@@ -34,14 +34,16 @@ if ! tmux info > /dev/null 2>&1; then
 fi
 
 EXCLUDE='0'
+NOSORT='0'
 PATTERN=''
 SPLITMODE=words
 LISTARGS=''
 CAPTUREARGS=''
 GREPARGS=''
-while getopts ep:s:l:c:g: name
+while getopts enp:s:l:c:g: name
 do case $name in
     e) EXCLUDE="1";;
+    n) NOSORT="1";; # internal/undocumented, don't use, might be changed in the future
     p) PATTERN="$OPTARG";;
     s) SPLITMODE="$OPTARG";;
     l) LISTARGS="$OPTARG";;
@@ -87,11 +89,40 @@ capturepanes() {
 }
 
 split() {
-    if [ "$SPLITMODE" = "lines" ]; then
+    if [ "$SPLITMODE" = "ilines,words" ]; then
+        # this is most reabable, but not posix compliant
+        # tee >(splitilines) >(splitwords)
+
+        # from https://unix.stackexchange.com/a/43536
+        # this has some issues with trailing whitespace sometimes
+        # tmp_dir=$(mktemp -d)
+        # mkfifo "$tmp_dir/f1" "$tmp_dir/f2"
+        # splitilines <"$tmp_dir/f1" & pid1=$!
+        # splitwords  <"$tmp_dir/f2" & pid2=$!
+        # tee "$tmp_dir/f1" "$tmp_dir/f2"
+        # rm -rf "$tmp_dir"
+        # wait $pid1 $pid2
+
+        splitilinesandwords
+    elif [ "$SPLITMODE" = "lines" ]; then
         splitlines
-    else
+    elif [ "$SPLITMODE" = "ilines" ]; then
+        splitilines
+    elif [ "$SPLITMODE" = "words" ]; then
         splitwords
     fi
+}
+
+splitilinesandwords() {
+    # print full line to duplicate it
+    # on the duplicate substitute all spaces with newlines
+    # duplicate that result again
+    # in that duplicate replace all non word characters by linebreaks 
+    sed -e 'p;s/[[:space:]]\{1,\}/\
+        /g;p;s/[^a-zA-Z0-9_]\{1,\}/\
+        /g' |
+    # remove surrounding non-word characters
+    grep -o "\\w.*\\w"
 }
 
 splitlines() {
@@ -99,13 +130,35 @@ splitlines() {
     grep -o "\\S.*\\S"
 }
 
+splitilines() {
+    # starts at first word character
+    grep -o "\\w.*\\S"
+}
+
+# returns both WORDS and words of each given line
 splitwords() {
+    # use sed like this instead of tr?
+    # substitute all spaces with newlines
+    # duplicate that line
+    # in the duplicate replace all non word characters by linebreaks 
+    # sed -e 's/[[:space:]]\{1,\}/\
+    #     /g;p;s/[^a-zA-Z0-9_]/ /g;s/[[:space:]]\{1,\}/\
+    #     /g' |
+
     # copy lines and split words
     sed -e 'p;s/[^a-zA-Z0-9_]/ /g' |
     # split on spaces
     tr -s '[:space:]' '\n' |
     # remove surrounding non-word characters
     grep -o "\\w.*\\w"
+}
+
+sortu() {
+    if [ "$NOSORT" = "1" ]; then
+        uniq
+    else
+        sort -u
+    fi
 }
 
 # list all panes
