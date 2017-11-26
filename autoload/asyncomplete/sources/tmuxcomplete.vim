@@ -41,7 +41,7 @@ endfunction
 
 function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     " taken from asyncomplete-buffer
-    let l:kw = matchstr(a:ctx['typed'], '\w\+$')
+    let l:kw = matchstr(a:ctx.typed, '\w\+$')
     let l:kwlen = len(l:kw)
     if l:kwlen < 1
         return
@@ -52,9 +52,9 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     " echom 'config ' . string(l:config)
 
     let l:params = {
-                \ 'name':     a:opt['name'],
+                \ 'name':     a:opt.name,
                 \ 'ctx':      a:ctx,
-                \ 'startcol': a:ctx['col'] - l:kwlen,
+                \ 'startcol': a:ctx.col - l:kwlen,
                 \ 'config':   l:config,
                 \ 'kw':       l:kw,
                 \ 'raw':      [],
@@ -65,12 +65,12 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     " completions later, even if the context changed in between.
     call s:complete(l:params, [''], 1)
 
-    if !l:config['filter_prefix']
+    if !l:config.filter_prefix
         let l:kw = ''
     endif
 
-    let l:cmd = tmuxcomplete#getcommandlist(l:kw, l:config['scrollback'], l:config['splitmode'])
-    if !l:config['sort_candidates']
+    let l:cmd = tmuxcomplete#getcommandlist(l:kw, l:config.scrollback, l:config.splitmode)
+    if !l:config.sort_candidates
         call add(l:cmd, '-n')
     endif
     " echom 'cmd ' . string(l:cmd)
@@ -82,19 +82,19 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
 endfunction
 
 function! s:stdout(params, id, data, event) abort
-    " echom '#stdout for ' . a:params['kw'] . ' with ' . (len(a:data) < 5 ? string(a:data) : string(a:data[0 : 1]) . ' ..' . len(a:data) . '.. ' . string(a:data[-2 : -1]))
+    " echom '#stdout for ' . a:params.kw . ' with ' . (len(a:data) < 5 ? string(a:data) : string(a:data[0 : 1]) . ' ..' . len(a:data) . '.. ' . string(a:data[-2 : -1]))
 
-    call extend(a:params['raw'], a:data) " to be mapped differently again on exit
+    call extend(a:params.raw, a:data) " to be mapped differently again on exit
 
-    if a:params['config']['show_incomplete']
+    if a:params.config.show_incomplete
         " surround with pipes while incomplete
-        call extend(a:params['mapped'], map(copy(a:data), '{"word":v:val,"menu":"|' . a:params['name'] . '|"}'))
-        call s:complete(a:params, a:params['mapped'], 1)
+        call extend(a:params.mapped, map(copy(a:data), '{"word":v:val,"menu":"|' . a:params.name . '|"}'))
+        call s:complete(a:params, a:params.mapped, 1)
     endif
 endfunction
 
 function! s:exit(params, id, data, event) abort
-    " echom '#exit for ' . a:params['kw'] . ' with ' . a:data
+    " echom '#exit for ' . a:params.kw . ' with ' . a:data
 
     if a:data != 0 " command failed
         " echom 'failed with ' . a:data
@@ -104,10 +104,10 @@ function! s:exit(params, id, data, event) abort
     endif
 
     " surround with brackends when complete
-    let l:mapped = map(a:params['raw'], '{"word":v:val,"menu":"[' . a:params['name'] . ']"}')
+    let l:mapped = map(a:params.raw, '{"word":v:val,"menu":"[' . a:params.name . ']"}')
     call s:complete(a:params, l:mapped, 0)
 endfunction
 
 function! s:complete(params, candidates, incomplete)
-    call asyncomplete#complete(a:params['name'], a:params['ctx'], a:params['startcol'], a:candidates, a:incomplete)
+    call asyncomplete#complete(a:params.name, a:params.ctx, a:params.startcol, a:candidates, a:incomplete)
 endfunction
