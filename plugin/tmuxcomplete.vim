@@ -16,10 +16,8 @@ function! s:init()
         echoerr "tmux-complete: unknown trigger: '" . trigger . "'"
     endif
 
-    let s:options = get(g:, 'tmuxcomplete#asyncomplete_source_options', '')
-    if type(s:options) == type({})
-        autocmd User asyncomplete_setup call asyncomplete#sources#tmuxcomplete#register(s:options)
-    endif
+    let s:options = get(g:, 'tmuxcomplete#asyncomplete_source_options', {})
+    autocmd User asyncomplete_setup call asyncomplete#sources#tmuxcomplete#register(s:options)
 endfunction
 
 call s:init()
