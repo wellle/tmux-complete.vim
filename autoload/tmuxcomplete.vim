@@ -13,33 +13,39 @@ endfunction
 
 let s:script = expand('<sfile>:h:h') . "/sh/tmuxcomplete"
 
-function! s:build_command(base, capture_args, splitmode)
+function! s:build_command(base, capture_args, splitmode, as)
     let pattern   = '^' . escape(a:base, '*^$][.\') . '.'
     let list_args = get(g:, 'tmuxcomplete#list_args', '-a')
     let grep_args = tmuxcomplete#grepargs(a:base)
 
-    let command  =  'sh ' . shellescape(s:script)
-    let command .= ' -p ' . shellescape(pattern)
-    let command .= ' -s ' . shellescape(a:splitmode)
-    let command .= ' -l ' . shellescape(list_args)
-    let command .= ' -c ' . shellescape(a:capture_args)
-    let command .= ' -g ' . shellescape(grep_args)
+    let command = s:newcommand(a:as)
+    let command = s:addcommand2(command, a:as, 'sh', s:script)
+    let command = s:addcommand2(command, a:as, '-p', pattern)
+    let command = s:addcommand2(command, a:as, '-s', a:splitmode)
+    let command = s:addcommand2(command, a:as, '-l', list_args)
+    let command = s:addcommand2(command, a:as, '-c', a:capture_args)
+    let command = s:addcommand2(command, a:as, '-g', grep_args)
 
-    if $TMUX_PANE !=# ""     " if running inside tmux
-        let command .= ' -e' " exclude current pane
+    if $TMUX_PANE !=# "" " if running inside tmux
+        let command = s:addcommand1(command, a:as, '-e') " exclude current pane
     endif
 
     return command
 endfunction
 
 function! tmuxcomplete#getcommand(base, splitmode)
-    return s:build_command(a:base, s:capture_args, a:splitmode)
+    return s:build_command(a:base, s:capture_args, a:splitmode, 'string')
+endfunction
+
+function! tmuxcomplete#getcommandlist(base, scrollback, splitmode)
+    let capture_args = s:capture_args . ' -S -' . a:scrollback
+    return s:build_command(a:base, capture_args, a:splitmode, 'list')
 endfunction
 
 function! tmuxcomplete#completions(base, capture_args, splitmode)
-    let command = s:build_command(a:base, a:capture_args, a:splitmode)
+    let command = s:build_command(a:base, a:capture_args, a:splitmode, 'string')
 
-    let completions = system(command)
+    let completions = system(command) " TODO: use systemlist()?
     if v:shell_error != 0
         return []
     endif
@@ -95,6 +101,31 @@ function! tmuxcomplete#grepargs(base)
         return ''
     endif
     return '-i'
+endfunction
+
+function! s:newcommand(as)
+    if a:as == 'list'
+        return []
+    else " string
+        return ''
+    endif
+endfunction
+
+function! s:addcommand1(command, as, value)
+    if a:as == 'list'
+        return add(a:command, a:value)
+    else " string
+        return (a:command == '' ? '' : a:command . ' ') . a:value
+    endif
+endfunction
+
+function! s:addcommand2(command, as, key, value)
+    if a:as == 'list'
+        call   add(a:command, a:key)
+        return add(a:command, a:value) " no escaping here
+    else " string
+        return (a:command == '' ? '' : a:command . ' ') . a:key . ' ' . shellescape(a:value)
+    endif
 endfunction
 
 " for integration with completion frameworks
