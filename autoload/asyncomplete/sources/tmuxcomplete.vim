@@ -17,7 +17,7 @@ let s:defaultopts = {
 " if there you are using many tmux windows with a lot of text in it completion
 " can be slow. that's why we start showing candidates as soon as they come in
 " if you prefer to only see candidates once the list is complete, you can
-" disable this 'show_incomplete'
+" disable this by setting 'show_incomplete'
 "
 " 'sort_candidates' controls whether we sort candidates from tmux externally.
 " if it's enabled we can't get early incomplete results. if you have

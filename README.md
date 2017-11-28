@@ -36,17 +36,74 @@ MacVim!
 
 Tmux complete is automatically integrated with the following plugins:
 
-- [neocomplete](https://github.com/Shougo/neocomplete.vim): You can see tmux
-    completions right in your neocomplete pop-up.
+- [asyncomplete](https://github.com/prabirshrestha/asyncomplete.vim)
 
-- [neocomplcache](https://github.com/Shougo/neocomplcache.vim): You can see tmux
-    completions right in your neocomplcache pop-up.
+    To see tmux completions in your asyncomplete pop-up you will need the async
+    plugin as well:
 
-- [deoplete](https://github.com/Shougo/deoplete.nvim): You can see tmux
-    completions right in your deoplete pop-up.
+    ```vim
+    Plug 'prabirshrestha/async.vim'
+    Plug 'prabirshrestha/asyncomplete.vim'
+    Plug 'wellle/tmux-complete.vim'
+    ```
 
-- [unite](https://github.com/Shougo/unite.vim): You can use tmux complete
-    as a unite source:
+    This integration comes with sensible defaults, but you have some options to
+    fine tune it. To start put a block like this into your vimrc:
+
+    ```vim
+    let g:tmuxcomplete#asyncomplete_source_options = {
+                \ 'name':      'tmuxcomplete',
+                \ 'whitelist': ['*'],
+                \ 'config': {
+                \     'splitmode':      'words',
+                \     'filter_prefix':   1,
+                \     'show_incomplete': 1,
+                \     'sort_candidates': 0,
+                \     'scrollback':      0
+                \     }
+                \ }
+    ```
+
+    With `name` you can change how it appears in the pop-up. `whitelist` makes
+    it possible to enable this integration only for certain filetypes.
+
+    The `splitmode` can be `words`, `lines`, `ilines`, or `linies,words`.
+    `ilines` stands for "inner line", starting with a word character (ignoring
+    special chararcters in front) and `ilines,words` completes both lines and
+    words.
+
+    If `filter_prefix` is enabled, we will filter candidates based on the
+    entered text, this usually gives faster results. For fuzzy matching this
+    should be disabled.
+
+    If there you are using many tmux windows with a lot of text in it,
+    completion can be slow. That's why we start showing candidates as soon as
+    they come in. If you prefer to only see candidates once the list is
+    complete, you can disable this by setting `show_incomplete`.
+
+    `sort_candidates` controls whether we sort candidates from tmux externally.
+    If it's enabled we can't get early incomplete results. If you have
+    `show_incomplete` disabled, this might get slightly quicker results and
+    potentially better sorted completions.
+
+    If `scrollback` is positive we will consider that many lines in each tmux
+    pane's history for completion.
+
+- [neocomplete](https://github.com/Shougo/neocomplete.vim)
+
+    You can see tmux completions right in your neocomplete pop-up.
+
+- [neocomplcache](https://github.com/Shougo/neocomplcache.vim)
+
+    You can see tmux completions right in your neocomplcache pop-up.
+
+- [deoplete](https://github.com/Shougo/deoplete.nvim)
+
+    You can see tmux completions right in your deoplete pop-up.
+
+- [unite](https://github.com/Shougo/unite.vim)
+
+    You can use tmux complete as a unite source:
 
     ```vim
     Unite tmuxcomplete       " opens a menu containing words from adjacent tmux windows
@@ -56,6 +113,12 @@ Tmux complete is automatically integrated with the following plugins:
 ## Installation
 
 Use your favorite plugin manager.
+
+- [Vim-plug][vim-plug]
+
+    ```vim
+    Plug 'wellle/tmux-complete.vim'
+    ```
 
 - [NeoBundle][neobundle]
 
@@ -67,12 +130,6 @@ Use your favorite plugin manager.
 
     ```vim
     Bundle 'wellle/tmux-complete.vim'
-    ```
-
-- [Vim-plug][vim-plug]
-
-    ```vim
-    Plug 'wellle/tmux-complete.vim'
     ```
 
 - [Pathogen][pathogen]
