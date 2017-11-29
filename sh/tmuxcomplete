@@ -174,4 +174,4 @@ split |
 # filter out items not matching pattern
 grep -e "$PATTERN" $GREPARGS |
 # sort and remove duplicates
-sort -u
+sortu
