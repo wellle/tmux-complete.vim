@@ -60,6 +60,7 @@ Tmux complete is automatically integrated with the following plugins:
                 \     'show_incomplete': 1,
                 \     'sort_candidates': 0,
                 \     'scrollback':      0
+                \     'truncate':        0
                 \     }
                 \ }
     ```
@@ -88,6 +89,10 @@ Tmux complete is automatically integrated with the following plugins:
 
     If `scrollback` is positive we will consider that many lines in each tmux
     pane's history for completion.
+
+    If 'truncate' is positive, then only prefixes of the matches up to this
+    length are shown in the completion pop-up. Upon selection the full match is
+    completed of course.
 
 - [neocomplete](https://github.com/Shougo/neocomplete.vim)
 

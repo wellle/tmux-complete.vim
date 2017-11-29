@@ -26,16 +26,24 @@ let s:defaultopts = {
 "
 " if 'scrollback' is positive we will consider that many lines in each tmux
 " pane's history for completion
+"
+" if 'truncate' is positive, then only prefixes of the matches up to this
+" length are shown in the completion pop-up. upon selection the full match is
+" completed of course
 let s:defaultconfig = {
             \ 'splitmode':      'words',
             \ 'filter_prefix':   1,
             \ 'show_incomplete': 1,
             \ 'sort_candidates': 0,
-            \ 'scrollback':      0
+            \ 'scrollback':      0,
+            \ 'truncate':        0
             \ }
 
 function! asyncomplete#sources#tmuxcomplete#register(opts)
-    let l:opts = extend(copy(s:defaultopts), a:opts)
+    let l:opts   = extend(copy(s:defaultopts), a:opts)
+    let s:config = extend(copy(s:defaultconfig), get(a:opts, 'config', {}))
+    " echom 'config ' . string(s:config)
+    let s:abbr = s:config.truncate > 0 ? ',"abbr":v:val[0:' . (s:config.truncate-1) . ']' : ''
     call asyncomplete#register_source(l:opts)
 endfunction
 
@@ -48,14 +56,10 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     endif
     " echom '#completor for ' . l:kw
 
-    let l:config = extend(copy(s:defaultconfig), get(a:opt, 'config', {}))
-    " echom 'config ' . string(l:config)
-
     let l:params = {
                 \ 'name':     a:opt.name,
                 \ 'ctx':      a:ctx,
                 \ 'startcol': a:ctx.col - l:kwlen,
-                \ 'config':   l:config,
                 \ 'kw':       l:kw,
                 \ 'raw':      [],
                 \ 'mapped':   []
@@ -65,12 +69,12 @@ function! asyncomplete#sources#tmuxcomplete#completor(opt, ctx)
     " completions later, even if the context changed in between.
     call s:complete(l:params, [''], 1)
 
-    if !l:config.filter_prefix
+    if !s:config.filter_prefix
         let l:kw = ''
     endif
 
-    let l:cmd = tmuxcomplete#getcommandlist(l:kw, l:config.scrollback, l:config.splitmode)
-    if !l:config.sort_candidates
+    let l:cmd = tmuxcomplete#getcommandlist(l:kw, s:config.scrollback, s:config.splitmode)
+    if !s:config.sort_candidates
         call add(l:cmd, '-n')
     endif
     " echom 'cmd ' . string(l:cmd)
@@ -86,9 +90,9 @@ function! s:stdout(params, id, data, event) abort
 
     call extend(a:params.raw, a:data) " to be mapped differently again on exit
 
-    if a:params.config.show_incomplete
+    if s:config.show_incomplete
         " surround with pipes while incomplete
-        call extend(a:params.mapped, map(copy(a:data), '{"word":v:val,"menu":"|' . a:params.name . '|"}'))
+        call extend(a:params.mapped, map(copy(a:data), '{"word":v:val,"menu":"|' . a:params.name . '|"' . s:abbr . '}'))
         call s:complete(a:params, a:params.mapped, 1)
     endif
 endfunction
@@ -104,7 +108,7 @@ function! s:exit(params, id, data, event) abort
     endif
 
     " surround with brackends when complete
-    let l:mapped = map(a:params.raw, '{"word":v:val,"menu":"[' . a:params.name . ']"}')
+    let l:mapped = map(a:params.raw, '{"word":v:val,"menu":"[' . a:params.name . ']"' . s:abbr . '}')
     call s:complete(a:params, l:mapped, 0)
 endfunction
 
