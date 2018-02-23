@@ -1,7 +1,7 @@
+from subprocess import check_output
+
 from .base import Base
 
-import deoplete.util
-from subprocess import check_output
 
 class Source(Base):
     def __init__(self, vim):
