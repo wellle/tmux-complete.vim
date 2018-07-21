@@ -18,6 +18,8 @@ function! s:init()
 
     let s:options = get(g:, 'tmuxcomplete#asyncomplete_source_options', {})
     autocmd User asyncomplete_setup call asyncomplete#sources#tmuxcomplete#register(s:options)
+
+    autocmd User Ncm2Plugin call ncm2#sources#tmuxcomplete#register()
 endfunction
 
 call s:init()

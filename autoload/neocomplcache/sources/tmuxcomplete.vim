@@ -6,8 +6,7 @@ let s:source = {
             \ 'kind' : 'keyword',
             \ 'mark' : '[tmux]',
             \ 'rank' : 4,
-            \ 'min_pattern_length' :
-            \ g:neocomplcache_auto_completion_start_length,
+            \ 'min_pattern_length' : g:neocomplcache_auto_completion_start_length,
             \ }
 
 function! s:source.gather_candidates(context)
