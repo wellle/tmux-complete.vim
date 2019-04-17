@@ -94,6 +94,10 @@ Tmux complete is automatically integrated with the following plugins:
     length are shown in the completion pop-up. Upon selection the full match is
     completed of course.
 
+- [coc](https://github.com/neoclide/coc.nvim)
+
+    You can see tmux completions right in your coc pop-up.
+
 - [ncm2](https://github.com/ncm2/ncm2)
 
     You can see tmux completions right in your ncm2 pop-up.
