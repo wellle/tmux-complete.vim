@@ -130,7 +130,7 @@ endfunction
 
 " for integration with completion frameworks
 function! tmuxcomplete#gather_candidates()
-    return tmuxcomplete#complete(0, '')
+    return tmuxcomplete#completions('', s:capture_args, 'words')
 endfunction
 
 call tmuxcomplete#init()
