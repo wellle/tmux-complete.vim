@@ -150,7 +150,7 @@ splitwords() {
     # split on spaces
     tr -s '[:space:]' '\n' |
     # remove surrounding non-word characters
-    grep -o "\\w.*\\w"
+    grep -o "\w*"
 }
 
 sortu() {
