@@ -20,6 +20,10 @@ function! s:init()
     autocmd User asyncomplete_setup call asyncomplete#sources#tmuxcomplete#register(s:options)
 
     autocmd User Ncm2Plugin call ncm2#sources#tmuxcomplete#register()
+
+    if exists('g:loaded_compe')
+      lua require'compe'.register_source('tmux', require'compe_tmux')
+    endif
 endfunction
 
 call s:init()

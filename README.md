@@ -123,6 +123,14 @@ Tmux complete is automatically integrated with the following plugins:
     Unite tmuxcomplete/lines " opens a menu containing words from adjacent tmux windows and lines where they were found
     ```
 
+- [nvim-compe](https://github.com/hrsh7th/nvim-compe)
+
+    You can use tmux complete as a compe source:
+
+    ```vim
+    let g:compe.source.tmux = v:true
+    ```
+
 ## Installation
 
 Use your favorite plugin manager.
