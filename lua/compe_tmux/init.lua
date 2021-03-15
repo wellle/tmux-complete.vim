@@ -14,9 +14,9 @@ function Source.determine(_, context)
 end
 
 function Source.complete(_, context)
-  local items = vim.fn["tmuxcomplete#complete"](0, context.input)
-
-  context.callback({ items = items })
+  vim.fn["tmuxcomplete#async#gather_candidates"](function (items)
+    context.callback({ items = items })
+  end)
 end
 
 return Source
