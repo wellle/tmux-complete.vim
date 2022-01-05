@@ -71,8 +71,7 @@ excludecurrent() {
         # use -F to match $ in session id
         grep -v -F "$currentpane"
     elif ! [ "$TARGET" = "-1" ]; then
-        targetpane=$(tmux display-message -p '01-#{session_id} ')$TARGET
-        grep -F "$targetpane"
+        echo $(tmux display-message -p '01-#{session_id} ')$TARGET
     else
         cat
     fi
