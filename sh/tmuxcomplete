@@ -164,7 +164,7 @@ splitwords() {
 
 sortu() {
     if [ "$NOSORT" = "1" ]; then
-        uniq
+        cat
     else
         sort -u
     fi
