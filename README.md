@@ -41,11 +41,15 @@ MacVim!
 There is also a function that copies all the text visible in a particular tmux
 pane directly into a new split buffer in your Vim instance!
 
-Simply call the function, or map it to something:
+Simply call the function like so:
 
-```
+```vim
 :call tmuxcomplete#tmux_pane_to_buffer()
+```
 
+ Or map it to something convienient:
+
+```vim
 nnoremap <LEADER>t :call tmuxcomplete#tmux_pane_to_buffer()<CR>
 ```
 
