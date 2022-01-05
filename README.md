@@ -53,12 +53,12 @@ Simply call the function like so:
 nnoremap <LEADER>t :call tmuxcomplete#tmux_pane_to_buffer()<CR>
 ```
 
-After the function is called, the tmux pane indices are flashed for a brief moment. Then just type the number to specify the pane you want:
+After the function is called, the tmux pane indices are flashed for a brief moment. Then just type the number to specify the pane you want and hit enter:
 
 ![pane_selection](https://user-images.githubusercontent.com/52209396/148301300-c4b002d6-6362-4e81-b1a0-52277088a51c.jpg)
 
 
-And it's right there, ready to be bent to Vim's will:
+Here I typed '2', ad it's right there, ready to be bent to Vim's will:
 
 ![pane_2](https://user-images.githubusercontent.com/52209396/148301308-2f8db950-498c-442c-84e4-d354f94dbcec.jpg)
 
