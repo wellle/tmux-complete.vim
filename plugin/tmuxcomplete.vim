@@ -25,6 +25,7 @@ function! s:init()
       lua require'compe'.register_source('tmux', require'compe_tmux')
     endif
 
+    " for use with tmuxcomplete#tmux_pane_to_buffer()
     let g:tmuxcomplete_pane_index_display_duration_ms = "350"
 
 endfunction
