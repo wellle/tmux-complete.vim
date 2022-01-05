@@ -24,6 +24,9 @@ function! s:init()
     if exists('g:loaded_compe')
       lua require'compe'.register_source('tmux', require'compe_tmux')
     endif
+
+    let g:tmuxcomplete_pane_index_display_duration_ms = "350"
+
 endfunction
 
 call s:init()

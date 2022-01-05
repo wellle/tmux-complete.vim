@@ -139,7 +139,9 @@ function! tmuxcomplete#display_tmux_pane_indices(duration)
 endfunction                             
 
 function! tmuxcomplete#tmux_pane_to_buffer()
-    call tmuxcomplete#display_tmux_pane_indices("350")
+    if g:tmuxcomplete_pane_index_display_duration_ms > 0
+        call tmuxcomplete#display_tmux_pane_indices(g:tmuxcomplete_pane_index_display_duration_ms)
+    endif
     " get the input from user
     let targetpane = input("target_pane:")
     if targetpane =~ '\d\+'
