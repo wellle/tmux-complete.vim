@@ -6,6 +6,10 @@
 # Words visible in current window, excluding current pane
 #     sh tmuxcomplete -e
 #
+# Words visible in specified pane in current window
+# (can't be used alongside the -e option)
+#     sh tmuxcomplete -t <pane_idex>
+#
 # Words visible in current session
 #     sh tmuxcomplete -l '-s'
 #
@@ -35,21 +39,23 @@ fi
 
 EXCLUDE='0'
 NOSORT='0'
+TARGET='-1'
 PATTERN=''
 SPLITMODE=words
 LISTARGS=''
 CAPTUREARGS=''
 GREPARGS=''
-while getopts enp:s:l:c:g: name
+while getopts enp:s:t:l:c:g: name
 do case $name in
     e) EXCLUDE="1";;
     n) NOSORT="1";; # internal/undocumented, don't use, might be changed in the future
+    t) TARGET="$OPTARG";;
     p) PATTERN="$OPTARG";;
     s) SPLITMODE="$OPTARG";;
     l) LISTARGS="$OPTARG";;
     c) CAPTUREARGS="$OPTARG";;
     g) GREPARGS="$OPTARG";;
-    *) echo "Usage: $0 [-p pattern] [-s splitmode] [-l listargs] [-c captureargs] [-g grepargs]\n"
+    *) echo "Usage: $0 [-t <pane_index>] [-p pattern] [-s splitmode] [-l listargs] [-c captureargs] [-g grepargs]\n"
         exit 2;;
 esac
 done
@@ -64,6 +70,9 @@ excludecurrent() {
         # echo 1>&2 'current' "$currentpane"
         # use -F to match $ in session id
         grep -v -F "$currentpane"
+    elif ! [ "$TARGET" = "-1" ]; then
+        targetpane=$(tmux display-message -p '01-#{session_id} ')$TARGET
+        grep -F "$targetpane"
     else
         cat
     fi
