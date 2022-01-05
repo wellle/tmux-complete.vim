@@ -154,3 +154,5 @@ function! tmuxcomplete#tmux_pane_to_buffer()
         setlocal nobuflisted
     endif
 endfunction                             
+
+call tmuxcomplete#init()
