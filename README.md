@@ -41,7 +41,15 @@ MacVim!
 There is also a function that copies all the text visible in a particular tmux
 pane directly into a new split buffer in your Vim instance!
 
-Simply call the function, and specify the pane you want:
+Simply call the function, or map it to something:
+
+```
+:call tmuxcomplete#tmux_pane_to_buffer()
+
+nnoremap <LEADER>t :call tmuxcomplete#tmux_pane_to_buffer()<CR>
+```
+
+, and specify the pane you want:
 
 ![pane_selection](https://user-images.githubusercontent.com/52209396/148301300-c4b002d6-6362-4e81-b1a0-52277088a51c.jpg)
 
@@ -223,7 +231,7 @@ behavior, put this in your .vimrc:
     let g:tmuxcomplete_pane_index_display_duration_ms = 0
     ```
 
-- Or set it to a different duration:
+- Or set it to a different duration (as a string):
     
     ```vim
     let g:tmuxcomplete_pane_index_display_duration_ms = "1000"
