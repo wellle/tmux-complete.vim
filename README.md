@@ -53,7 +53,7 @@ Simply call the function like so:
 nnoremap <LEADER>t :call tmuxcomplete#tmux_pane_to_buffer()<CR>
 ```
 
-, and specify the pane you want:
+After the function is called, the tmux pane indices are flashed for a brief moment. Then just type the number to specify the pane you want:
 
 ![pane_selection](https://user-images.githubusercontent.com/52209396/148301300-c4b002d6-6362-4e81-b1a0-52277088a51c.jpg)
 
