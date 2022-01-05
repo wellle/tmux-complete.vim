@@ -42,10 +42,13 @@ There is also a function that copies all the text visible in a particular tmux
 pane directly into a new split buffer in your Vim instance!
 
 Simply call the function, and specify the pane you want:
-![][example_pane_to_buffer_before]
+
+![pane_selection](https://user-images.githubusercontent.com/52209396/148301300-c4b002d6-6362-4e81-b1a0-52277088a51c.jpg)
+
 
 And it's right there, ready to be bent to Vim's will:
-![][example_pane_to_buffer_after]
+
+![pane_2](https://user-images.githubusercontent.com/52209396/148301308-2f8db950-498c-442c-84e4-d354f94dbcec.jpg)
 
 ## Third party integration
 
