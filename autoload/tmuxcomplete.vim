@@ -133,13 +133,13 @@ function! tmuxcomplete#gather_candidates()
     return tmuxcomplete#completions('', s:capture_args, 'words')
 endfunction
 
-function! DisplayTmuxPaneIndices(duration)
+function! tmuxcomplete#display_tmux_pane_indices(duration)
     " bring up the pane numbers as a background job
     call job_start(["tmux", "display-pane", "-d", a:duration])
 endfunction                             
 
-function! TmuxPaneToBuffer()
-    call DisplayTmuxPaneIndices("350")
+function! tmuxcomplete#tmux_pane_to_buffer()
+    call tmuxcomplete#display_tmux_pane_indices("350")
     " get the input from user
     let targetpane = input("target_pane:")
     if targetpane =~ '\d\+'
@@ -152,5 +152,3 @@ function! TmuxPaneToBuffer()
         setlocal nobuflisted
     endif
 endfunction                             
-
-call tmuxcomplete#init()
