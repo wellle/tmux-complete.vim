@@ -144,7 +144,7 @@ function! tmuxcomplete#tmux_pane_to_buffer()
     let targetpane = input("target_pane:")
     if targetpane =~ '\d\+'
         silent execute 'split .tmux_pane_'.targetpane
-        silent execute '%!sh ~/linux_config_files/bin/tmuxcomplete.sh -t '.targetpane.' -s lines -n'
+        silent execute '%!sh '.s:script.' -t '.targetpane.' -s lines -n'
         set filetype=bash
         setlocal buftype=nofile
         setlocal bufhidden=hide
