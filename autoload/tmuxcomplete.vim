@@ -133,4 +133,26 @@ function! tmuxcomplete#gather_candidates()
     return tmuxcomplete#completions('', s:capture_args, 'words')
 endfunction
 
+function! tmuxcomplete#display_tmux_pane_indices(duration)
+    " bring up the pane numbers as a background job
+    call job_start(["tmux", "display-pane", "-d", a:duration])
+endfunction                             
+
+function! tmuxcomplete#tmux_pane_to_buffer()
+    if g:tmuxcomplete_pane_index_display_duration_ms > 0
+        call tmuxcomplete#display_tmux_pane_indices(g:tmuxcomplete_pane_index_display_duration_ms)
+    endif
+    " get the input from user
+    let targetpane = input("target_pane:")
+    if targetpane =~ '\d\+'
+        silent execute 'split .tmux_pane_'.targetpane
+        silent execute '%!sh '.s:script.' -t '.targetpane.' -s lines -n'
+        set filetype=bash
+        setlocal buftype=nofile
+        setlocal bufhidden=hide
+        setlocal noswapfile
+        setlocal nobuflisted
+    endif
+endfunction                             
+
 call tmuxcomplete#init()

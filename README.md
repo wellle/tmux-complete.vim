@@ -1,6 +1,7 @@
 # tmux-complete.vim
 
-Vim plugin for insert mode completion of words in adjacent tmux panes
+Vim plugin for insert mode completion of words in adjacent tmux panes and
+duplicating the contents of a visible tmux pane in a split buffer.
 
 ## Motivation
 
@@ -8,13 +9,18 @@ If you're using Vim in tandem with Tmux you might be familiar with this pesky
 situation:
 
 You're happily editing your lovely files in Vim, when you notice you need to
-type a word that you can see in a different Tmux pane right next to Vim. This
-might be some secret key found in your REPL or the name of a failing test.
+type a word, or a chunk of text, that you can see in a different Tmux pane
+right next to Vim. This might be some secret key found in your REPL or the name
+of a failing test.
 
-Usually the interesting text is too short to warrant switching panes and going
-into Tmux' copy mode, so you end typing it out again.
+Usually the interesting text is too short, to warrant switching panes and going
+into Tmux's copy mode, so you end up typing it out again.
 
-## But fear no longer!
+Or maybe You just don't like using Tmux's copy mode, period. You feel like that
+chunk of text sitting in a distant Tmux pane ought to be just as accessible to
+you as a chunk of text sitting in a Vim buffer.
+
+## Well, fear no longer!
 
 This plugin adds a completion function that puts all words visible in your Tmux
 panes right under your fingertips. Just enter insert mode, start typing any
@@ -31,6 +37,30 @@ MacVim!
 
 [example]: https://raw.githubusercontent.com/wellle/images/master/tmux-complete-example.png
 [gvim]: https://raw.githubusercontent.com/wellle/images/master/gvim-complete.png
+
+There is also a function that copies all the text visible in a particular tmux
+pane directly into a new split buffer in your Vim instance!
+
+Simply call the function like so:
+
+```vim
+:call tmuxcomplete#tmux_pane_to_buffer()
+```
+
+ Or map it to something convienient:
+
+```vim
+nnoremap <LEADER>t :call tmuxcomplete#tmux_pane_to_buffer()<CR>
+```
+
+After the function is called, the tmux pane indices are flashed for a brief moment. Then just type the number to specify the pane you want and hit enter:
+
+![pane_selection](https://user-images.githubusercontent.com/52209396/148301300-c4b002d6-6362-4e81-b1a0-52277088a51c.jpg)
+
+
+Here I typed '2', ad it's right there, ready to be bent to Vim's will:
+
+![pane_2](https://user-images.githubusercontent.com/52209396/148301308-2f8db950-498c-442c-84e4-d354f94dbcec.jpg)
 
 ## Third party integration
 
@@ -196,3 +226,18 @@ tmux-complete by putting one of these lines into your `.vimrc`:
 
 The trigger function itself is named `tmuxcomplete#complete` (in case you want
 to call it manually).
+
+- When copying the text in a Tmux pane to a Vim buffer, Tmux is instructed to
+briefly flash the pane indexes for 350ms to aid in your choice. To disable this
+behavior, put this in your .vimrc:
+
+    ```vim
+    let g:tmuxcomplete_pane_index_display_duration_ms = 0
+    ```
+
+- Or set it to a different duration (as a string):
+    
+    ```vim
+    let g:tmuxcomplete_pane_index_display_duration_ms = "1000"
+    ```
+    
